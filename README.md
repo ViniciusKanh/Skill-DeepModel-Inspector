@@ -173,8 +173,8 @@ Typography: **Press Start 2P** (titles) · **IBM Plex Mono** (data) · **VT323**
 ### 1 · Install
 
 ```powershell
-git clone https://github.com/ViniciusKanh/deepmodel-inspector.git
-cd deepmodel-inspector
+git clone https://github.com/ViniciusKanh/Skill-DeepModel-Inspector.git
+cd Skill-DeepModel-Inspector
 py -3.13 -m venv .venv
 .\.venv\Scripts\Activate.ps1          # Linux/macOS: source .venv/bin/activate
 pip install -e ".[app]"               # engine + local app (add ,dev for tests)
