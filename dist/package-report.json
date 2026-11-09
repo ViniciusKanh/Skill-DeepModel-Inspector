@@ -1,0 +1,205 @@
+{
+  "zip": "dist/deepmodel-inspector-v1.0.0.zip",
+  "checks": {
+    "frontmatter": {
+      "name": "deepmodel-inspector",
+      "description": "Diagnose LLM training failures, fine-tuning instability, dat\u2026",
+      "summary": "Offline, read-only diagnostics for LLM training logs, datase\u2026",
+      "version": "1.0.0",
+      "tags": "[llm, mlops, llm-evaluation, fine-tuning, dataset-quality, d\u2026",
+      "keywords": "[overfitting, loss divergence, validation loss, deduplicatio\u2026",
+      "use_cases": ""
+    },
+    "static_problems": [],
+    "isolated_runs": [
+      {
+        "script": "dmi_training.py",
+        "args": "--input synthetic_training/overfitting.csv -o dmi_results/training.json",
+        "exit": 0,
+        "expected_exit": 0,
+        "stderr": ""
+      },
+      {
+        "script": "dmi_dataset.py",
+        "args": "--input demo_experiment/data/train.jsonl -o dmi_results/dataset.json",
+        "exit": 0,
+        "expected_exit": 0,
+        "stderr": ""
+      },
+      {
+        "script": "dmi_leakage.py",
+        "args": "--train demo_experiment/data/train.jsonl --test demo_experiment/data/test.jsonl -o dmi_results/leakage.json",
+        "exit": 0,
+        "expected_exit": 0,
+        "stderr": ""
+      },
+      {
+        "script": "dmi_tokenizer.py",
+        "args": "--input synthetic_tokenization/tokenizer_comparison.jsonl --max-length 64 -o dmi_results/tokenizer.json",
+        "exit": 0,
+        "expected_exit": 0,
+        "stderr": ""
+      },
+      {
+        "script": "dmi_generation.py",
+        "args": "--input demo_experiment/outputs/generations.jsonl -o dmi_results/generation.json",
+        "exit": 0,
+        "expected_exit": 0,
+        "stderr": ""
+      },
+      {
+        "script": "dmi_compare.py",
+        "args": "--before synthetic_runs/run_v1 --after synthetic_runs/run_v2 -o dmi_results/compare.json",
+        "exit": 0,
+        "expected_exit": 0,
+        "stderr": ""
+      },
+      {
+        "script": "dmi_checkpoint.py",
+        "args": "--input synthetic_runs/run_v1",
+        "exit": 0,
+        "expected_exit": 0,
+        "stderr": ""
+      },
+      {
+        "script": "dmi_investigate.py",
+        "args": "--results dmi_results/training.json dmi_results/dataset.json dmi_results/leakage.json dmi_results/tokenizer.json dmi_res",
+        "exit": 0,
+        "expected_exit": 0,
+        "stderr": ""
+      },
+      {
+        "script": "dmi_report.py",
+        "args": "--input dmi_results/report.json --format markdown -o dmi_results/report.md",
+        "exit": 0,
+        "expected_exit": 0,
+        "stderr": ""
+      },
+      {
+        "script": "dmi_report.py",
+        "args": "--input dmi_results/report.json --format html -o dmi_results/report.html",
+        "exit": 0,
+        "expected_exit": 0,
+        "stderr": ""
+      },
+      {
+        "script": "dmi_dataset.py",
+        "args": "--input /etc/hosts",
+        "exit": 3,
+        "expected_exit": 3,
+        "stderr": "security: path outside authorized roots: C:\\etc\\hosts"
+      },
+      {
+        "script": "dmi_training.py",
+        "args": "--input synthetic_training/does_not_exist.csv",
+        "exit": 2,
+        "expected_exit": 2,
+        "stderr": "error: path not found: C:\\Users\\Vinicius Santos\\AppData\\Local\\Temp\\tmpngeqytzw\\work\\synthetic_training\\does_not_exist.csv"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "deepmodel-inspector/references/input-formats.md",
+      "bytes": 2423
+    },
+    {
+      "path": "deepmodel-inspector/references/rules.md",
+      "bytes": 10468
+    },
+    {
+      "path": "deepmodel-inspector/scripts/dmi_checkpoint.py",
+      "bytes": 12835
+    },
+    {
+      "path": "deepmodel-inspector/scripts/dmi_compare.py",
+      "bytes": 24174
+    },
+    {
+      "path": "deepmodel-inspector/scripts/dmi_dataset.py",
+      "bytes": 33276
+    },
+    {
+      "path": "deepmodel-inspector/scripts/dmi_generation.py",
+      "bytes": 27901
+    },
+    {
+      "path": "deepmodel-inspector/scripts/dmi_investigate.py",
+      "bytes": 24314
+    },
+    {
+      "path": "deepmodel-inspector/scripts/dmi_leakage.py",
+      "bytes": 25296
+    },
+    {
+      "path": "deepmodel-inspector/scripts/dmi_report.py",
+      "bytes": 14249
+    },
+    {
+      "path": "deepmodel-inspector/scripts/dmi_tokenizer.py",
+      "bytes": 24079
+    },
+    {
+      "path": "deepmodel-inspector/scripts/dmi_training.py",
+      "bytes": 32972
+    },
+    {
+      "path": "deepmodel-inspector/SKILL.md",
+      "bytes": 7378
+    },
+    {
+      "path": "deepmodel-inspector/templates/answer-template.md",
+      "bytes": 693
+    }
+  ],
+  "scripts": {
+    "dmi_checkpoint.py": {
+      "file_bytes": 12835,
+      "logic_bytes": 9346,
+      "code_without_text_bytes": 8003
+    },
+    "dmi_compare.py": {
+      "file_bytes": 24174,
+      "logic_bytes": 19150,
+      "code_without_text_bytes": 16162
+    },
+    "dmi_dataset.py": {
+      "file_bytes": 33276,
+      "logic_bytes": 25775,
+      "code_without_text_bytes": 22029
+    },
+    "dmi_generation.py": {
+      "file_bytes": 27901,
+      "logic_bytes": 21150,
+      "code_without_text_bytes": 17570
+    },
+    "dmi_investigate.py": {
+      "file_bytes": 24314,
+      "logic_bytes": 19396,
+      "code_without_text_bytes": 13580
+    },
+    "dmi_leakage.py": {
+      "file_bytes": 25296,
+      "logic_bytes": 19248,
+      "code_without_text_bytes": 16890
+    },
+    "dmi_report.py": {
+      "file_bytes": 14249,
+      "logic_bytes": 11411,
+      "code_without_text_bytes": 8907
+    },
+    "dmi_tokenizer.py": {
+      "file_bytes": 24079,
+      "logic_bytes": 18580,
+      "code_without_text_bytes": 15754
+    },
+    "dmi_training.py": {
+      "file_bytes": 32972,
+      "logic_bytes": 24777,
+      "code_without_text_bytes": 19489
+    }
+  },
+  "sha256": "763704f28654dbb11903a0d716da94277008d51e6b6edea2885dfcfc6d87c362",
+  "zip_bytes": 84988,
+  "file_count": 13
+}

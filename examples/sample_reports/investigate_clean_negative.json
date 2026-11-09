@@ -1,0 +1,217 @@
+{
+  "tool": "deepmodel-inspector",
+  "version": "1.0.0",
+  "generated_at": "2026-11-09T14:36:09Z",
+  "inventory": [
+    {
+      "path": "test.jsonl",
+      "name": "test.jsonl",
+      "kind": "dataset",
+      "split": "test"
+    },
+    {
+      "path": "train.jsonl",
+      "name": "train.jsonl",
+      "kind": "dataset",
+      "split": "train"
+    }
+  ],
+  "analyses_run": [
+    "dataset",
+    "leakage"
+  ],
+  "sections": {
+    "dataset": [
+      {
+        "source": "test.jsonl",
+        "metrics": {
+          "records": 40,
+          "formats": {
+            "instruction": 40
+          },
+          "empty_records": 0,
+          "length_chars": {
+            "n": 40,
+            "min": 285.0,
+            "max": 338.0,
+            "mean": 309.275,
+            "std": 12.229038,
+            "median": 310.0,
+            "p95": 329.0
+          },
+          "length_words": {
+            "n": 40,
+            "min": 47.0,
+            "max": 47.0,
+            "mean": 47.0,
+            "std": 0.0,
+            "median": 47.0,
+            "p95": 47.0
+          },
+          "exact_duplicate_groups": 0,
+          "exact_duplicate_extra_records": 0,
+          "exact_duplicate_rate": 0.0,
+          "near_duplicate_pairs": 0,
+          "near_duplicate_records": 0,
+          "near_duplicate_threshold": 0.8,
+          "repetitive_records": 0,
+          "structure_issues": {},
+          "unicode": {
+            "mojibake_records": 0,
+            "zero_width_records": 0,
+            "control_char_records": 0,
+            "non_nfc_records": 0
+          },
+          "scripts": {
+            "LATIN": 1.0
+          },
+          "language_estimate": {
+            "en": 27,
+            "und": 13
+          },
+          "language_method": "stopword-count heuristic (en/pt/es/fr/de); 'und' when undetermined",
+          "instruction_like_records": 0
+        },
+        "series": null,
+        "limitations": [],
+        "finding_ids": []
+      },
+      {
+        "source": "train.jsonl",
+        "metrics": {
+          "records": 150,
+          "formats": {
+            "instruction": 150
+          },
+          "empty_records": 0,
+          "length_chars": {
+            "n": 150,
+            "min": 284.0,
+            "max": 338.0,
+            "mean": 311.38,
+            "std": 10.496774,
+            "median": 312.5,
+            "p95": 330.0
+          },
+          "length_words": {
+            "n": 150,
+            "min": 47.0,
+            "max": 47.0,
+            "mean": 47.0,
+            "std": 0.0,
+            "median": 47.0,
+            "p95": 47.0
+          },
+          "exact_duplicate_groups": 0,
+          "exact_duplicate_extra_records": 0,
+          "exact_duplicate_rate": 0.0,
+          "near_duplicate_pairs": 0,
+          "near_duplicate_records": 0,
+          "near_duplicate_threshold": 0.8,
+          "repetitive_records": 0,
+          "structure_issues": {},
+          "unicode": {
+            "mojibake_records": 0,
+            "zero_width_records": 0,
+            "control_char_records": 0,
+            "non_nfc_records": 0
+          },
+          "scripts": {
+            "LATIN": 1.0
+          },
+          "language_estimate": {
+            "en": 120,
+            "und": 30
+          },
+          "language_method": "stopword-count heuristic (en/pt/es/fr/de); 'und' when undetermined",
+          "instruction_like_records": 0
+        },
+        "series": null,
+        "limitations": [],
+        "finding_ids": []
+      }
+    ],
+    "leakage": [
+      {
+        "source": "train.jsonl vs test.jsonl",
+        "metrics": {
+          "train_records": 150,
+          "boilerplate_ngrams_ignored": 0,
+          "splits": {
+            "test.jsonl": {
+              "records": 40,
+              "exact_overlap": 0,
+              "exact_overlap_rate": 0.0,
+              "near_duplicate_overlap": 0,
+              "prompt_seen_in_train": 0,
+              "records_with_13gram_overlap": 0,
+              "mean_13gram_overlap_of_hits": 0.0
+            }
+          }
+        },
+        "series": null,
+        "limitations": [
+          "Contamination by 13-gram overlap ignores n-grams present in >= 1% of training records (and >= 5 records) to avoid flagging shared templates.",
+          "Only lexical overlap is measured; paraphrased or translated contamination is not detected."
+        ],
+        "finding_ids": [
+          "DMI-001"
+        ]
+      }
+    ]
+  },
+  "findings": [
+    {
+      "id": "DMI-001",
+      "rule": "LEK.CLEAN",
+      "category": "leakage",
+      "severity": "INFO",
+      "status": "CONFIRMED",
+      "title": "No overlap detected (test.jsonl)",
+      "evidence": {
+        "split": "test.jsonl",
+        "records": 40
+      },
+      "source": "train.jsonl vs test.jsonl",
+      "explanation": "No exact, near-duplicate, prompt or strong n-gram overlap at the configured thresholds.",
+      "recommendation": "No action needed for lexical leakage; semantic leakage is not covered.",
+      "confirmation": "",
+      "result_index": 2,
+      "local_id": "LEA-001",
+      "analysis": "leakage"
+    }
+  ],
+  "hypotheses": [],
+  "experiments": [],
+  "summary": {
+    "findings_by_severity": {
+      "CRITICAL": 0,
+      "HIGH": 0,
+      "MEDIUM": 0,
+      "LOW": 0,
+      "INFO": 1
+    },
+    "findings_by_status": {
+      "CONFIRMED": 1,
+      "POTENTIAL": 0,
+      "INCONCLUSIVE": 0
+    },
+    "top_findings": []
+  },
+  "limitations": [
+    "Contamination by 13-gram overlap ignores n-grams present in >= 1% of training records (and >= 5 records) to avoid flagging shared templates.",
+    "Only lexical overlap is measured; paraphrased or translated contamination is not detected."
+  ],
+  "question": "Is my fine-tuning dataset contaminated?",
+  "answer": {
+    "intents": [
+      "contamination",
+      "dataset"
+    ],
+    "relevant_findings": [],
+    "hypotheses": [],
+    "missing_artifacts": [],
+    "conclusion": "No evidence of the asked problem was found in the provided artifacts at the documented thresholds. This does not prove its absence.",
+    "status": "INCONCLUSIVE"
+  }
+}

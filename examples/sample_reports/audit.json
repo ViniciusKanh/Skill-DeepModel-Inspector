@@ -1,0 +1,1717 @@
+{
+  "tool": "deepmodel-inspector",
+  "version": "1.0.0",
+  "generated_at": "2026-11-09T14:36:07Z",
+  "inventory": [
+    {
+      "path": "data/test.jsonl",
+      "name": "test.jsonl",
+      "kind": "dataset",
+      "split": "test"
+    },
+    {
+      "path": "data/train.jsonl",
+      "name": "train.jsonl",
+      "kind": "dataset",
+      "split": "train"
+    },
+    {
+      "path": "logs/training_log.csv",
+      "name": "training_log.csv",
+      "kind": "training_log",
+      "split": "train"
+    },
+    {
+      "path": "outputs/generations.jsonl",
+      "name": "generations.jsonl",
+      "kind": "generations",
+      "split": null
+    },
+    {
+      "path": "runs/run_v1/config.json",
+      "name": "config.json",
+      "kind": "run_metadata",
+      "split": null,
+      "note": "analyzed via run comparison"
+    },
+    {
+      "path": "runs/run_v1/metrics.json",
+      "name": "metrics.json",
+      "kind": "run_metadata",
+      "split": null,
+      "note": "analyzed via run comparison"
+    },
+    {
+      "path": "runs/run_v1/training_log.csv",
+      "name": "training_log.csv",
+      "kind": "training_log",
+      "split": "train",
+      "note": "analyzed via run comparison"
+    },
+    {
+      "path": "runs/run_v2/config.json",
+      "name": "config.json",
+      "kind": "run_metadata",
+      "split": null,
+      "note": "analyzed via run comparison"
+    },
+    {
+      "path": "runs/run_v2/metrics.json",
+      "name": "metrics.json",
+      "kind": "run_metadata",
+      "split": null,
+      "note": "analyzed via run comparison"
+    },
+    {
+      "path": "runs/run_v2/training_log.csv",
+      "name": "training_log.csv",
+      "kind": "training_log",
+      "split": "train",
+      "note": "analyzed via run comparison"
+    },
+    {
+      "path": "tokenization/tokenized_pt.jsonl",
+      "name": "tokenized_pt.jsonl",
+      "kind": "tokenized",
+      "split": null
+    },
+    {
+      "path": "runs/run_v1",
+      "name": "run_v1",
+      "kind": "run"
+    },
+    {
+      "path": "runs/run_v2",
+      "name": "run_v2",
+      "kind": "run"
+    }
+  ],
+  "analyses_run": [
+    "comparison",
+    "dataset",
+    "generation",
+    "leakage",
+    "tokenizer",
+    "training"
+  ],
+  "sections": {
+    "dataset": [
+      {
+        "source": "test.jsonl",
+        "metrics": {
+          "records": 20,
+          "formats": {
+            "instruction": 20
+          },
+          "empty_records": 0,
+          "length_chars": {
+            "n": 20,
+            "min": 265.0,
+            "max": 333.0,
+            "mean": 306.05,
+            "std": 17.912217,
+            "median": 311.0,
+            "p95": 332.0
+          },
+          "length_words": {
+            "n": 20,
+            "min": 42.0,
+            "max": 48.0,
+            "mean": 46.5,
+            "std": 1.936492,
+            "median": 47.0,
+            "p95": 48.0
+          },
+          "exact_duplicate_groups": 0,
+          "exact_duplicate_extra_records": 0,
+          "exact_duplicate_rate": 0.0,
+          "near_duplicate_pairs": 0,
+          "near_duplicate_records": 0,
+          "near_duplicate_threshold": 0.8,
+          "repetitive_records": 0,
+          "structure_issues": {},
+          "unicode": {
+            "mojibake_records": 0,
+            "zero_width_records": 0,
+            "control_char_records": 0,
+            "non_nfc_records": 0
+          },
+          "scripts": {
+            "LATIN": 1.0
+          },
+          "language_estimate": {
+            "en": 16,
+            "und": 4
+          },
+          "language_method": "stopword-count heuristic (en/pt/es/fr/de); 'und' when undetermined",
+          "instruction_like_records": 0
+        },
+        "series": null,
+        "limitations": [],
+        "finding_ids": []
+      },
+      {
+        "source": "train.jsonl",
+        "metrics": {
+          "records": 260,
+          "formats": {
+            "instruction": 260
+          },
+          "empty_records": 0,
+          "length_chars": {
+            "n": 260,
+            "min": 280.0,
+            "max": 349.0,
+            "mean": 312.296154,
+            "std": 11.819833,
+            "median": 313.0,
+            "p95": 331.0
+          },
+          "length_words": {
+            "n": 260,
+            "min": 47.0,
+            "max": 48.0,
+            "mean": 47.038462,
+            "std": 0.192308,
+            "median": 47.0,
+            "p95": 47.0
+          },
+          "exact_duplicate_groups": 30,
+          "exact_duplicate_extra_records": 30,
+          "exact_duplicate_rate": 0.1154,
+          "near_duplicate_pairs": 10,
+          "near_duplicate_records": 20,
+          "near_duplicate_threshold": 0.8,
+          "repetitive_records": 0,
+          "structure_issues": {},
+          "unicode": {
+            "mojibake_records": 0,
+            "zero_width_records": 0,
+            "control_char_records": 0,
+            "non_nfc_records": 0
+          },
+          "scripts": {
+            "LATIN": 1.0
+          },
+          "language_estimate": {
+            "en": 202,
+            "und": 58
+          },
+          "language_method": "stopword-count heuristic (en/pt/es/fr/de); 'und' when undetermined",
+          "instruction_like_records": 0
+        },
+        "series": null,
+        "limitations": [],
+        "finding_ids": [
+          "DMI-004",
+          "DMI-009"
+        ]
+      }
+    ],
+    "training": [
+      {
+        "source": "training_log.csv",
+        "metrics": {
+          "rows": 100,
+          "unordered_rows": 0,
+          "train_loss": {
+            "n": 100,
+            "min": 0.33294,
+            "max": 2.41629,
+            "mean": 0.82898,
+            "std": 0.548842,
+            "median": 0.59315,
+            "p95": 2.03151,
+            "non_finite": 0,
+            "first": 2.41629,
+            "last": 0.33294,
+            "slope_per_1k_steps": -1.707488,
+            "relative_change": -0.86221,
+            "argmin_step": 1000.0,
+            "window_std": [
+              0.390241,
+              0.142703,
+              0.053275,
+              0.020674
+            ],
+            "window_mean": [
+              1.663276,
+              0.801129,
+              0.48488,
+              0.366635
+            ]
+          },
+          "val_loss": {
+            "n": 10,
+            "min": 1.10827,
+            "max": 1.48539,
+            "mean": 1.290488,
+            "std": 0.12943,
+            "median": 1.27923,
+            "p95": 1.48539,
+            "non_finite": 0,
+            "first": 1.48522,
+            "last": 1.48539,
+            "slope_per_1k_steps": 0.127651,
+            "relative_change": 0.000114,
+            "argmin_step": 400.0,
+            "window_std": [
+              0.09546,
+              0.035115,
+              0.02708,
+              0.082517
+            ],
+            "window_mean": [
+              1.38976,
+              1.143385,
+              1.17275,
+              1.373272
+            ]
+          },
+          "lr": {
+            "n": 100,
+            "min": 0.0,
+            "max": 0.000293,
+            "mean": 0.000135,
+            "std": 9.8e-05,
+            "median": 0.000129,
+            "p95": 0.000284,
+            "non_finite": 0,
+            "first": 3e-05,
+            "last": 0.0,
+            "slope_per_1k_steps": -0.000289,
+            "relative_change": -1.0,
+            "argmin_step": 1000.0,
+            "window_std": [
+              7.7e-05,
+              3.1e-05,
+              3.1e-05,
+              1.3e-05
+            ],
+            "window_mean": [
+              0.00023,
+              0.000204,
+              9.2e-05,
+              1.4e-05
+            ]
+          },
+          "grad_norm": {
+            "n": 100,
+            "min": 0.8636,
+            "max": 1.1373,
+            "mean": 1.003321,
+            "std": 0.051566,
+            "median": 1.0082,
+            "p95": 1.0733,
+            "non_finite": 0,
+            "first": 0.9872,
+            "last": 0.9487,
+            "slope_per_1k_steps": 0.027778,
+            "relative_change": -0.038999,
+            "argmin_step": 800.0,
+            "window_std": [
+              0.040592,
+              0.056065,
+              0.045484,
+              0.0584
+            ],
+            "window_mean": [
+              0.989324,
+              0.999688,
+              1.012908,
+              1.011364
+            ]
+          },
+          "train_relative_improvement": 0.798764,
+          "train_loss_spikes": 0,
+          "lr_loss_spearman": 0.865,
+          "lr_loss_pearson": 0.6064,
+          "val_train_gap": {
+            "first": -0.28714,
+            "last": 1.15245
+          },
+          "grad_norm_explosions": 0,
+          "val_perplexity_derived": {
+            "n": 10,
+            "min": 3.029113,
+            "max": 4.416688,
+            "mean": 3.665397,
+            "std": 0.480802,
+            "median": 3.594279,
+            "p95": 4.416688
+          },
+          "perplexity_source": "derived exp(eval_loss), assumes mean token cross-entropy in nats"
+        },
+        "series": {
+          "train_loss": [
+            [
+              10.0,
+              2.41629
+            ],
+            [
+              20.0,
+              2.32928
+            ],
+            [
+              30.0,
+              2.25016
+            ],
+            [
+              40.0,
+              2.17684
+            ],
+            [
+              50.0,
+              2.10245
+            ],
+            [
+              60.0,
+              2.03151
+            ],
+            [
+              70.0,
+              1.967
+            ],
+            [
+              80.0,
+              1.90002
+            ],
+            [
+              90.0,
+              1.82617
+            ],
+            [
+              100.0,
+              1.77236
+            ],
+            [
+              110.0,
+              1.71665
+            ],
+            [
+              120.0,
+              1.65811
+            ],
+            [
+              130.0,
+              1.60992
+            ],
+            [
+              140.0,
+              1.56525
+            ],
+            [
+              150.0,
+              1.51337
+            ],
+            [
+              160.0,
+              1.45635
+            ],
+            [
+              170.0,
+              1.41403
+            ],
+            [
+              180.0,
+              1.3721
+            ],
+            [
+              190.0,
+              1.32408
+            ],
+            [
+              200.0,
+              1.29463
+            ],
+            [
+              210.0,
+              1.25099
+            ],
+            [
+              220.0,
+              1.20507
+            ],
+            [
+              230.0,
+              1.18327
+            ],
+            [
+              240.0,
+              1.14076
+            ],
+            [
+              250.0,
+              1.10525
+            ],
+            [
+              260.0,
+              1.07729
+            ],
+            [
+              270.0,
+              1.05125
+            ],
+            [
+              280.0,
+              1.02254
+            ],
+            [
+              290.0,
+              0.99148
+            ],
+            [
+              300.0,
+              0.95613
+            ],
+            [
+              310.0,
+              0.93359
+            ],
+            [
+              320.0,
+              0.90536
+            ],
+            [
+              330.0,
+              0.88504
+            ],
+            [
+              340.0,
+              0.85449
+            ],
+            [
+              350.0,
+              0.84371
+            ],
+            [
+              360.0,
+              0.82413
+            ],
+            [
+              370.0,
+              0.78821
+            ],
+            [
+              380.0,
+              0.77748
+            ],
+            [
+              390.0,
+              0.76719
+            ],
+            [
+              400.0,
+              0.74496
+            ],
+            [
+              410.0,
+              0.72893
+            ],
+            [
+              420.0,
+              0.71312
+            ],
+            [
+              430.0,
+              0.69668
+            ],
+            [
+              440.0,
+              0.68491
+            ],
+            [
+              450.0,
+              0.66631
+            ],
+            [
+              460.0,
+              0.64623
+            ],
+            [
+              470.0,
+              0.62664
+            ],
+            [
+              480.0,
+              0.62763
+            ],
+            [
+              490.0,
+              0.61794
+            ],
+            [
+              500.0,
+              0.59699
+            ],
+            [
+              510.0,
+              0.58931
+            ],
+            [
+              520.0,
+              0.58057
+            ],
+            [
+              530.0,
+              0.562
+            ],
+            [
+              540.0,
+              0.55385
+            ],
+            [
+              550.0,
+              0.5485
+            ],
+            [
+              560.0,
+              0.53198
+            ],
+            [
+              570.0,
+              0.52435
+            ],
+            [
+              580.0,
+              0.51471
+            ],
+            [
+              590.0,
+              0.50259
+            ],
+            [
+              600.0,
+              0.49324
+            ],
+            [
+              610.0,
+              0.49491
+            ],
+            [
+              620.0,
+              0.48853
+            ],
+            [
+              630.0,
+              0.47772
+            ],
+            [
+              640.0,
+              0.47295
+            ],
+            [
+              650.0,
+              0.46479
+            ],
+            [
+              660.0,
+              0.457
+            ],
+            [
+              670.0,
+              0.45367
+            ],
+            [
+              680.0,
+              0.44655
+            ],
+            [
+              690.0,
+              0.43738
+            ],
+            [
+              700.0,
+              0.4384
+            ],
+            [
+              710.0,
+              0.43047
+            ],
+            [
+              720.0,
+              0.41067
+            ],
+            [
+              730.0,
+              0.41987
+            ],
+            [
+              740.0,
+              0.41519
+            ],
+            [
+              750.0,
+              0.41281
+            ],
+            [
+              760.0,
+              0.40263
+            ],
+            [
+              770.0,
+              0.40289
+            ],
+            [
+              780.0,
+              0.39665
+            ],
+            [
+              790.0,
+              0.39302
+            ],
+            [
+              800.0,
+              0.38724
+            ],
+            [
+              810.0,
+              0.38032
+            ],
+            [
+              820.0,
+              0.38755
+            ],
+            [
+              830.0,
+              0.38699
+            ],
+            [
+              840.0,
+              0.37465
+            ],
+            [
+              850.0,
+              0.37654
+            ],
+            [
+              860.0,
+              0.35713
+            ],
+            [
+              870.0,
+              0.36054
+            ],
+            [
+              880.0,
+              0.35766
+            ],
+            [
+              890.0,
+              0.36854
+            ],
+            [
+              900.0,
+              0.36107
+            ],
+            [
+              910.0,
+              0.35846
+            ],
+            [
+              920.0,
+              0.36316
+            ],
+            [
+              930.0,
+              0.35185
+            ],
+            [
+              940.0,
+              0.34549
+            ],
+            [
+              950.0,
+              0.34789
+            ],
+            [
+              960.0,
+              0.35081
+            ],
+            [
+              970.0,
+              0.34863
+            ],
+            [
+              980.0,
+              0.3361
+            ],
+            [
+              990.0,
+              0.33712
+            ],
+            [
+              1000.0,
+              0.33294
+            ]
+          ],
+          "val_loss": [
+            [
+              100.0,
+              1.48522
+            ],
+            [
+              200.0,
+              1.2943
+            ],
+            [
+              300.0,
+              1.1785
+            ],
+            [
+              400.0,
+              1.10827
+            ],
+            [
+              500.0,
+              1.14567
+            ],
+            [
+              600.0,
+              1.19983
+            ],
+            [
+              700.0,
+              1.26416
+            ],
+            [
+              800.0,
+              1.33465
+            ],
+            [
+              900.0,
+              1.40889
+            ],
+            [
+              1000.0,
+              1.48539
+            ]
+          ]
+        },
+        "limitations": [],
+        "finding_ids": [
+          "DMI-007"
+        ]
+      }
+    ],
+    "generation": [
+      {
+        "source": "generations.jsonl",
+        "metrics": {
+          "groups": {
+            "greedy": {
+              "responses": 30,
+              "empty": 0,
+              "length_words": {
+                "n": 30,
+                "min": 53.0,
+                "max": 65.0,
+                "mean": 59.0,
+                "std": 4.898979,
+                "median": 59.0,
+                "p95": 65.0
+              },
+              "short_responses": 0,
+              "distinct_1": 0.0576,
+              "distinct_2": 0.092,
+              "distinct_3": 0.0936,
+              "repetition_rate": {
+                "n": 30,
+                "min": 0.823529,
+                "max": 0.859649,
+                "mean": 0.841483,
+                "std": 0.014747,
+                "median": 0.84127,
+                "p95": 0.859649
+              },
+              "degenerate_responses": 30,
+              "mattr": 0.1119,
+              "mean_pairwise_similarity": 0.0884,
+              "near_identical_fraction": 0.0,
+              "finish_reason_length": 15,
+              "reached_max_tokens": 0,
+              "decoding_params": {
+                "temperature": [
+                  "0.0"
+                ],
+                "repetition_penalty": [
+                  "1.0"
+                ],
+                "max_new_tokens": [
+                  "128"
+                ],
+                "do_sample": [
+                  "False"
+                ]
+              }
+            }
+          }
+        },
+        "series": null,
+        "limitations": [
+          "Grounding checks are lexical (content-word overlap and numbers vs. the provided reference); they do not prove factual correctness or detect hallucinations without references.",
+          "Differences between configurations are associations; causality requires controlled re-runs."
+        ],
+        "finding_ids": [
+          "DMI-005",
+          "DMI-010",
+          "DMI-011"
+        ]
+      }
+    ],
+    "tokenizer": [
+      {
+        "source": "tokenized_pt.jsonl",
+        "metrics": {
+          "groups": {
+            "english-bpe": {
+              "records": 30,
+              "records_with_tokens": 30,
+              "chars": 4096,
+              "words": 600,
+              "tokens_total": 2362,
+              "tokens_per_record": {
+                "n": 30,
+                "min": 60.0,
+                "max": 102.0,
+                "mean": 78.733333,
+                "std": 10.385674,
+                "median": 79.0,
+                "p95": 96.0
+              },
+              "tokens_per_word": 3.9367,
+              "tokens_per_word_dist": {
+                "n": 30,
+                "min": 3.0,
+                "max": 5.1,
+                "mean": 3.936667,
+                "std": 0.519284,
+                "median": 3.95,
+                "p95": 4.8
+              },
+              "chars_per_token": 1.7341,
+              "tokens_per_char": 0.5767,
+              "unk_rate": 0.0,
+              "byte_fallback_rate": 0.200677,
+              "padding_rate": 0.0,
+              "distinct_tokens_observed": 64,
+              "fragmentation_rate": 0.8124
+            }
+          }
+        },
+        "series": null,
+        "limitations": [
+          "max_length not provided; truncation and context waste not evaluated."
+        ],
+        "finding_ids": [
+          "DMI-013",
+          "DMI-014"
+        ]
+      }
+    ],
+    "leakage": [
+      {
+        "source": "train.jsonl vs test.jsonl",
+        "metrics": {
+          "train_records": 260,
+          "boilerplate_ngrams_ignored": 0,
+          "splits": {
+            "test.jsonl": {
+              "records": 20,
+              "exact_overlap": 10,
+              "exact_overlap_rate": 0.5,
+              "near_duplicate_overlap": 5,
+              "prompt_seen_in_train": 3,
+              "records_with_13gram_overlap": 0,
+              "mean_13gram_overlap_of_hits": 0.0
+            }
+          }
+        },
+        "series": null,
+        "limitations": [
+          "Contamination by 13-gram overlap ignores n-grams present in >= 1% of training records (and >= 5 records) to avoid flagging shared templates.",
+          "Only lexical overlap is measured; paraphrased or translated contamination is not detected."
+        ],
+        "finding_ids": [
+          "DMI-001",
+          "DMI-006",
+          "DMI-012"
+        ]
+      }
+    ],
+    "comparison": [
+      {
+        "source": "run_v1 -> run_v2",
+        "metrics": {
+          "hyperparameters": {
+            "learning_rate": {
+              "before": 2e-05,
+              "after": 0.0001,
+              "changed": true
+            },
+            "per_device_batch": {
+              "before": 8,
+              "after": 8,
+              "changed": false
+            },
+            "grad_accum": {
+              "before": 4,
+              "after": 4,
+              "changed": false
+            },
+            "epochs": {
+              "before": 3,
+              "after": 5,
+              "changed": true
+            },
+            "max_seq_length": {
+              "before": 1024,
+              "after": 1024,
+              "changed": false
+            },
+            "method": {
+              "before": "sft",
+              "after": "sft",
+              "changed": false
+            },
+            "scheduler": {
+              "before": "cosine",
+              "after": "cosine",
+              "changed": false
+            },
+            "seed": {
+              "before": 1,
+              "after": 1,
+              "changed": false
+            },
+            "effective_batch_per_device": {
+              "before": 32,
+              "after": 32,
+              "changed": false
+            }
+          },
+          "changed_hyperparameters": [
+            "epochs",
+            "learning_rate"
+          ],
+          "compatibility": {
+            "tokenizer": {
+              "before": "demo-bpe-32k",
+              "after": "demo-bpe-32k"
+            },
+            "vocab_size": {
+              "before": 32000,
+              "after": 32000
+            },
+            "eval_dataset": {
+              "before": "eval-v1-sha256:3f9a",
+              "after": "eval-v1-sha256:3f9a"
+            },
+            "eval_protocol": {
+              "before": null,
+              "after": null
+            }
+          },
+          "metric_deltas": {
+            "curve_final_train_loss": {
+              "before": 1.77527,
+              "after": 0.33294,
+              "relative_change": -0.8125,
+              "direction": "lower",
+              "assessment": "improvement"
+            },
+            "curve_final_val_loss": {
+              "before": 1.86676,
+              "after": 1.48539,
+              "relative_change": -0.2043,
+              "direction": "lower",
+              "assessment": "improvement"
+            },
+            "curve_min_val_loss": {
+              "before": 1.86676,
+              "after": 1.10827,
+              "relative_change": -0.4063,
+              "direction": "lower",
+              "assessment": "improvement"
+            },
+            "eval_accuracy": {
+              "before": 0.71,
+              "after": 0.66,
+              "relative_change": -0.0704,
+              "direction": "higher",
+              "assessment": "regression"
+            },
+            "eval_loss": {
+              "before": 1.2,
+              "after": 1.34,
+              "relative_change": 0.1167,
+              "direction": "lower",
+              "assessment": "regression"
+            }
+          },
+          "files": {
+            "before": [
+              "config.json",
+              "metrics.json",
+              "training_log.csv"
+            ],
+            "after": [
+              "config.json",
+              "metrics.json",
+              "training_log.csv"
+            ]
+          },
+          "curves": {
+            "before": {
+              "best_val_loss": 1.86676,
+              "best_step": 1000.0,
+              "final": 1.86676
+            },
+            "after": {
+              "best_val_loss": 1.10827,
+              "best_step": 400.0,
+              "final": 1.48539
+            }
+          }
+        },
+        "series": null,
+        "limitations": [
+          "Single-run differences do not establish statistical significance; repeat with several seeds.",
+          "Compatibility unverified for: eval_protocol (not present in both configs)."
+        ],
+        "finding_ids": [
+          "DMI-002",
+          "DMI-003",
+          "DMI-008",
+          "DMI-015"
+        ]
+      }
+    ]
+  },
+  "findings": [
+    {
+      "id": "DMI-001",
+      "rule": "LEK.EXACT",
+      "category": "leakage",
+      "severity": "CRITICAL",
+      "status": "CONFIRMED",
+      "title": "Evaluation records present verbatim in training (test.jsonl)",
+      "evidence": {
+        "split": "test.jsonl",
+        "count": 10,
+        "rate": 0.5,
+        "first_indices": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "sample": "Complex result dataset recipe with loss to slow text input apple loss. Bottle r…"
+      },
+      "source": "train.jsonl vs test.jsonl",
+      "explanation": "These evaluation examples (after normalization) also appear in the training data, so metrics on them measure memorization, not generalization.",
+      "recommendation": "Remove the overlapping records from the evaluation set (or training set) and re-evaluate.",
+      "confirmation": "Report metrics separately on the clean subset vs. the overlapping subset.",
+      "result_index": 5,
+      "local_id": "LEA-001",
+      "analysis": "leakage"
+    },
+    {
+      "id": "DMI-002",
+      "rule": "CMP.REGRESSION",
+      "category": "comparison",
+      "severity": "HIGH",
+      "status": "CONFIRMED",
+      "title": "Metric regressed: eval_accuracy",
+      "evidence": {
+        "metric": "eval_accuracy",
+        "before": 0.71,
+        "after": 0.66,
+        "relative_change": -0.0704,
+        "direction": "higher",
+        "assessment": "regression",
+        "changed_hyperparameters": [
+          "epochs",
+          "learning_rate"
+        ]
+      },
+      "source": "run_v1 -> run_v2",
+      "explanation": "The metric moved in the worse direction beyond the tolerance (1%). Status reflects whether evaluation compatibility was verified.",
+      "recommendation": "Investigate the changed hyperparameters/data; changes listed are candidates, not proven causes.",
+      "confirmation": "Revert one changed setting at a time (same seed and eval set) and re-measure.",
+      "result_index": 6,
+      "local_id": "COM-001",
+      "analysis": "comparison"
+    },
+    {
+      "id": "DMI-003",
+      "rule": "CMP.REGRESSION",
+      "category": "comparison",
+      "severity": "HIGH",
+      "status": "CONFIRMED",
+      "title": "Metric regressed: eval_loss",
+      "evidence": {
+        "metric": "eval_loss",
+        "before": 1.2,
+        "after": 1.34,
+        "relative_change": 0.1167,
+        "direction": "lower",
+        "assessment": "regression",
+        "changed_hyperparameters": [
+          "epochs",
+          "learning_rate"
+        ]
+      },
+      "source": "run_v1 -> run_v2",
+      "explanation": "The metric moved in the worse direction beyond the tolerance (1%). Status reflects whether evaluation compatibility was verified.",
+      "recommendation": "Investigate the changed hyperparameters/data; changes listed are candidates, not proven causes.",
+      "confirmation": "Revert one changed setting at a time (same seed and eval set) and re-measure.",
+      "result_index": 6,
+      "local_id": "COM-002",
+      "analysis": "comparison"
+    },
+    {
+      "id": "DMI-004",
+      "rule": "DAT.EXACT_DUP",
+      "category": "dataset",
+      "severity": "HIGH",
+      "status": "CONFIRMED",
+      "title": "Exact duplicate records (within this file)",
+      "evidence": {
+        "duplicate_groups": 30,
+        "extra_copies": 30,
+        "rate": 0.1154,
+        "largest_group_size": 2,
+        "sample": "Harbor cheese moves research carrot kitchen paper honey yellow coffee study exp…"
+      },
+      "source": "train.jsonl",
+      "explanation": "Identical records after normalization. Within one split this is a quality issue (over-weighting, memorization), not evaluation leakage; it may be intentional upsampling.",
+      "recommendation": "Deduplicate unless the repetition is a deliberate weighting choice.",
+      "confirmation": "Train on the deduplicated set and compare validation loss and generation repetition.",
+      "result_index": 1,
+      "local_id": "DAT-001",
+      "analysis": "dataset"
+    },
+    {
+      "id": "DMI-005",
+      "rule": "GEN.REPETITION",
+      "category": "generation",
+      "severity": "HIGH",
+      "status": "CONFIRMED",
+      "title": "Degenerate repetition",
+      "evidence": {
+        "degenerate_responses": 30,
+        "rate": 1.0,
+        "mean_repetition_rate": 0.841483,
+        "decoding_params": {
+          "temperature": [
+            "0.0"
+          ],
+          "repetition_penalty": [
+            "1.0"
+          ],
+          "max_new_tokens": [
+            "128"
+          ],
+          "do_sample": [
+            "False"
+          ]
+        },
+        "sample": "I think that I think that I think that I think that I think that I think that I think that I think that I think that I …"
+      },
+      "source": "generations.jsonl",
+      "explanation": ">=10% of responses repeat more than half of their word 3-grams (looping output).",
+      "recommendation": "Try repetition_penalty 1.1-1.3, no_repeat_ngram_size, higher temperature/top-p; check SFT data for repetitive targets and EOS supervision.",
+      "confirmation": "Re-generate the same prompts varying only one decoding parameter at a time.",
+      "result_index": 3,
+      "local_id": "GEN-001",
+      "analysis": "generation"
+    },
+    {
+      "id": "DMI-006",
+      "rule": "LEK.NEAR",
+      "category": "leakage",
+      "severity": "HIGH",
+      "status": "POTENTIAL",
+      "title": "Near-duplicate evaluation records in training (test.jsonl)",
+      "evidence": {
+        "split": "test.jsonl",
+        "count": 5,
+        "threshold_jaccard": 0.8,
+        "examples_eval_to_train": [
+          [
+            12,
+            250,
+            0.9773
+          ],
+          [
+            13,
+            251,
+            0.9773
+          ],
+          [
+            14,
+            252,
+            0.9773
+          ]
+        ]
+      },
+      "source": "train.jsonl vs test.jsonl",
+      "explanation": "High shingle overlap with a training record; may be paraphrase-level leakage.",
+      "recommendation": "Inspect pairs and exclude near copies from evaluation.",
+      "confirmation": "Compare metrics with and without these records.",
+      "result_index": 5,
+      "local_id": "LEA-002",
+      "analysis": "leakage"
+    },
+    {
+      "id": "DMI-007",
+      "rule": "TRN.OVERFIT",
+      "category": "training",
+      "severity": "HIGH",
+      "status": "CONFIRMED",
+      "title": "Validation loss rises while training loss falls (overfitting pattern)",
+      "evidence": {
+        "best_val_step": 400.0,
+        "best_val_loss": 1.10827,
+        "final_val_loss": 1.48539,
+        "relative_rise": 0.340278,
+        "increases_after_best": 6,
+        "train_slope_after_best": -0.006258
+      },
+      "source": "training_log.csv",
+      "explanation": "After its minimum, validation loss rose >=5% across repeated evaluations while training loss kept decreasing - the observable signature of overfitting.",
+      "recommendation": "Use the checkpoint near step 400; add early stopping, regularization (dropout/weight decay), more or deduplicated data, or fewer epochs.",
+      "confirmation": "Re-train with early stopping on eval_loss and compare held-out task metrics.",
+      "result_index": 2,
+      "local_id": "TRA-001",
+      "analysis": "training"
+    },
+    {
+      "id": "DMI-008",
+      "rule": "CMP.LATE_DEGRADATION",
+      "category": "comparison",
+      "severity": "MEDIUM",
+      "status": "CONFIRMED",
+      "title": "Validation loss of 'after' run ends >5% above its best",
+      "evidence": {
+        "run": "after",
+        "best": 1.10827,
+        "final": 1.48539,
+        "best_step": 400.0
+      },
+      "source": "run_v1 -> run_v2",
+      "explanation": "The final checkpoint is worse than an earlier one of the same run.",
+      "recommendation": "Compare the best checkpoints, not the final ones; consider early stopping.",
+      "confirmation": "",
+      "result_index": 6,
+      "local_id": "COM-003",
+      "analysis": "comparison"
+    },
+    {
+      "id": "DMI-009",
+      "rule": "DAT.NEAR_DUP",
+      "category": "dataset",
+      "severity": "MEDIUM",
+      "status": "POTENTIAL",
+      "title": "Near-duplicate records",
+      "evidence": {
+        "pairs": 10,
+        "records_involved": 20,
+        "threshold_jaccard": 0.8,
+        "example_pair_indices": [
+          [
+            30,
+            230
+          ],
+          [
+            31,
+            231
+          ],
+          [
+            32,
+            232
+          ]
+        ]
+      },
+      "source": "train.jsonl",
+      "explanation": "Pairs with word 5-shingle Jaccard similarity >= threshold (MinHash/LSH, verified).",
+      "recommendation": "Review examples; templated prompts can be legitimate, paraphrased copies usually are not.",
+      "confirmation": "Inspect the listed pairs and deduplicate if they carry the same content.",
+      "result_index": 1,
+      "local_id": "DAT-002",
+      "analysis": "dataset"
+    },
+    {
+      "id": "DMI-010",
+      "rule": "GEN.LOW_DIVERSITY",
+      "category": "generation",
+      "severity": "MEDIUM",
+      "status": "POTENTIAL",
+      "title": "Low lexical diversity",
+      "evidence": {
+        "distinct_2": 0.092,
+        "distinct_1": 0.0576,
+        "mattr": 0.1119
+      },
+      "source": "generations.jsonl",
+      "explanation": "Fewer than 30% of bigrams across outputs are unique.",
+      "recommendation": "Compare with a reference corpus of similar length; adjust sampling.",
+      "confirmation": "",
+      "result_index": 3,
+      "local_id": "GEN-002",
+      "analysis": "generation"
+    },
+    {
+      "id": "DMI-011",
+      "rule": "GEN.TRUNCATED",
+      "category": "generation",
+      "severity": "MEDIUM",
+      "status": "CONFIRMED",
+      "title": "Responses cut by the token limit",
+      "evidence": {
+        "count": 15,
+        "rate": 0.5
+      },
+      "source": "generations.jsonl",
+      "explanation": "finish_reason == length or output tokens reached max_tokens.",
+      "recommendation": "Raise max_new_tokens or investigate failure to emit EOS (often linked to repetition).",
+      "confirmation": "",
+      "result_index": 3,
+      "local_id": "GEN-003",
+      "analysis": "generation"
+    },
+    {
+      "id": "DMI-012",
+      "rule": "LEK.PROMPT",
+      "category": "leakage",
+      "severity": "MEDIUM",
+      "status": "POTENTIAL",
+      "title": "Evaluation prompts seen in training with different answers (test.jsonl)",
+      "evidence": {
+        "split": "test.jsonl",
+        "count": 3,
+        "first_indices": [
+          17,
+          18,
+          19
+        ]
+      },
+      "source": "train.jsonl vs test.jsonl",
+      "explanation": "The input side is identical to a training example while the target differs.",
+      "recommendation": "Decide whether shared prompts are acceptable for this benchmark; usually remove them.",
+      "confirmation": "",
+      "result_index": 5,
+      "local_id": "LEA-003",
+      "analysis": "leakage"
+    },
+    {
+      "id": "DMI-013",
+      "rule": "TOK.BYTE_FALLBACK",
+      "category": "tokenizer",
+      "severity": "MEDIUM",
+      "status": "POTENTIAL",
+      "title": "Frequent byte-fallback tokens",
+      "evidence": {
+        "byte_fallback_rate": 0.200677
+      },
+      "source": "tokenized_pt.jsonl",
+      "explanation": "Characters outside the vocabulary are spelled as raw bytes (common with accented characters when the tokenizer was trained on another language).",
+      "recommendation": "Check which characters trigger fallback; consider vocabulary extension.",
+      "confirmation": "",
+      "result_index": 4,
+      "local_id": "TOK-001",
+      "analysis": "tokenizer"
+    },
+    {
+      "id": "DMI-014",
+      "rule": "TOK.FERTILITY",
+      "category": "tokenizer",
+      "severity": "MEDIUM",
+      "status": "POTENTIAL",
+      "title": "High token fertility",
+      "evidence": {
+        "tokens_per_word": 3.9367,
+        "threshold": 2.0,
+        "fragmentation_rate": 0.8124
+      },
+      "source": "tokenized_pt.jsonl",
+      "explanation": "More than the threshold tokens per word on this text means each word costs several tokens, reducing effective context and raising compute per example.",
+      "recommendation": "Compare against an alternative tokenizer on the same texts; consider vocabulary extension or a tokenizer trained on the target language.",
+      "confirmation": "Tokenize the same sample with a candidate tokenizer and compare tokens_per_word.",
+      "result_index": 4,
+      "local_id": "TOK-002",
+      "analysis": "tokenizer"
+    },
+    {
+      "id": "DMI-015",
+      "rule": "CMP.HP_CHANGES",
+      "category": "comparison",
+      "severity": "INFO",
+      "status": "CONFIRMED",
+      "title": "Hyperparameters changed between runs",
+      "evidence": {
+        "epochs": {
+          "before": 3,
+          "after": 5,
+          "changed": true
+        },
+        "learning_rate": {
+          "before": 2e-05,
+          "after": 0.0001,
+          "changed": true
+        }
+      },
+      "source": "run_v1 -> run_v2",
+      "explanation": "Several simultaneous changes prevent attributing an effect to any single one.",
+      "recommendation": "Plan ablations that vary one setting at a time.",
+      "confirmation": "",
+      "result_index": 6,
+      "local_id": "COM-004",
+      "analysis": "comparison"
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "HYP-001",
+      "rule": "RC.LEAKAGE_INFLATED",
+      "status": "POTENTIAL",
+      "statement": "Evaluation scores may be inflated by train/test overlap.",
+      "supporting_findings": [
+        "DMI-001",
+        "DMI-006",
+        "DMI-012"
+      ],
+      "counter_evidence": "",
+      "experiment": "Re-compute evaluation metrics on the decontaminated subset and compare with the full set.",
+      "priority_rank": 0
+    },
+    {
+      "id": "HYP-002",
+      "rule": "RC.REGRESSION_DATA",
+      "status": "POTENTIAL",
+      "statement": "Data quality issues in the new training data may contribute to the regression.",
+      "supporting_findings": [
+        "DMI-001",
+        "DMI-002",
+        "DMI-003",
+        "DMI-004",
+        "DMI-006",
+        "DMI-009",
+        "DMI-012"
+      ],
+      "counter_evidence": "",
+      "experiment": "Retrain after fixing the flagged data issues and compare on the same eval set.",
+      "priority_rank": 0
+    },
+    {
+      "id": "HYP-003",
+      "rule": "RC.OVERFIT_BUDGET",
+      "status": "POTENTIAL",
+      "statement": "Training continued past the point of best generalization (too many steps/epochs or insufficient regularization for the dataset size).",
+      "supporting_findings": [
+        "DMI-007"
+      ],
+      "counter_evidence": "",
+      "experiment": "Enable early stopping on eval_loss or reduce epochs; compare held-out task metrics at the best step.",
+      "priority_rank": 1
+    },
+    {
+      "id": "HYP-004",
+      "rule": "RC.OVERFIT_DUPLICATES",
+      "status": "POTENTIAL",
+      "statement": "Duplicated training examples may accelerate memorization and overfitting.",
+      "supporting_findings": [
+        "DMI-004",
+        "DMI-007",
+        "DMI-009"
+      ],
+      "counter_evidence": "",
+      "experiment": "Train on the deduplicated set; overfitting onset (best eval step) should move later.",
+      "priority_rank": 1
+    },
+    {
+      "id": "HYP-005",
+      "rule": "RC.REGRESSION_HP",
+      "status": "POTENTIAL",
+      "statement": "One of the changed hyperparameters (epochs, learning_rate) may explain the regression.",
+      "supporting_findings": [
+        "DMI-002",
+        "DMI-003",
+        "DMI-015"
+      ],
+      "counter_evidence": "",
+      "experiment": "Ablate: revert each changed hyperparameter individually with a fixed seed.",
+      "priority_rank": 1
+    },
+    {
+      "id": "HYP-006",
+      "rule": "RC.REPETITION_DATA",
+      "status": "POTENTIAL",
+      "statement": "Repetitive or duplicated training targets may be teaching the model to repeat.",
+      "supporting_findings": [
+        "DMI-004",
+        "DMI-005"
+      ],
+      "counter_evidence": "",
+      "experiment": "Fine-tune on the deduplicated/filtered dataset with identical settings and compare repetition rate.",
+      "priority_rank": 1
+    },
+    {
+      "id": "HYP-007",
+      "rule": "RC.REPETITION_DECODING",
+      "status": "POTENTIAL",
+      "statement": "Decoding settings that favour loops: temperature<=0.3 (0.0), repetition_penalty<=1.0, greedy decoding (do_sample=False).",
+      "supporting_findings": [
+        "DMI-005"
+      ],
+      "counter_evidence": "",
+      "experiment": "Re-generate the same prompts with repetition_penalty=1.15 or temperature=0.7 (one change at a time).",
+      "priority_rank": 1
+    },
+    {
+      "id": "HYP-008",
+      "rule": "RC.REPETITION_EOS",
+      "status": "POTENTIAL",
+      "statement": "The model may fail to emit end-of-sequence and loops until the token limit.",
+      "supporting_findings": [
+        "DMI-005",
+        "DMI-011"
+      ],
+      "counter_evidence": "",
+      "experiment": "Check that SFT targets end with the EOS token and that the chat template adds it; count EOS in labels.",
+      "priority_rank": 1
+    },
+    {
+      "id": "HYP-009",
+      "rule": "RC.TOKENIZER_MISMATCH",
+      "status": "POTENTIAL",
+      "statement": "The tokenizer vocabulary fits this text/language poorly, raising sequence length and cost.",
+      "supporting_findings": [
+        "DMI-013",
+        "DMI-014"
+      ],
+      "counter_evidence": "",
+      "experiment": "Tokenize the same texts with a language-appropriate tokenizer; compare tokens/word.",
+      "priority_rank": 2
+    }
+  ],
+  "experiments": [
+    {
+      "for": "HYP-001",
+      "experiment": "Re-compute evaluation metrics on the decontaminated subset and compare with the full set.",
+      "priority": 1
+    },
+    {
+      "for": "HYP-002",
+      "experiment": "Retrain after fixing the flagged data issues and compare on the same eval set.",
+      "priority": 2
+    },
+    {
+      "for": "HYP-003",
+      "experiment": "Enable early stopping on eval_loss or reduce epochs; compare held-out task metrics at the best step.",
+      "priority": 3
+    },
+    {
+      "for": "HYP-004",
+      "experiment": "Train on the deduplicated set; overfitting onset (best eval step) should move later.",
+      "priority": 4
+    },
+    {
+      "for": "HYP-005",
+      "experiment": "Ablate: revert each changed hyperparameter individually with a fixed seed.",
+      "priority": 5
+    },
+    {
+      "for": "HYP-006",
+      "experiment": "Fine-tune on the deduplicated/filtered dataset with identical settings and compare repetition rate.",
+      "priority": 6
+    },
+    {
+      "for": "HYP-007",
+      "experiment": "Re-generate the same prompts with repetition_penalty=1.15 or temperature=0.7 (one change at a time).",
+      "priority": 7
+    },
+    {
+      "for": "HYP-008",
+      "experiment": "Check that SFT targets end with the EOS token and that the chat template adds it; count EOS in labels.",
+      "priority": 8
+    },
+    {
+      "for": "HYP-009",
+      "experiment": "Tokenize the same texts with a language-appropriate tokenizer; compare tokens/word.",
+      "priority": 9
+    },
+    {
+      "for": "DMI-001",
+      "experiment": "Report metrics separately on the clean subset vs. the overlapping subset.",
+      "priority": 10
+    },
+    {
+      "for": "DMI-002",
+      "experiment": "Revert one changed setting at a time (same seed and eval set) and re-measure.",
+      "priority": 11
+    },
+    {
+      "for": "DMI-004",
+      "experiment": "Train on the deduplicated set and compare validation loss and generation repetition.",
+      "priority": 12
+    },
+    {
+      "for": "DMI-005",
+      "experiment": "Re-generate the same prompts varying only one decoding parameter at a time.",
+      "priority": 13
+    },
+    {
+      "for": "DMI-006",
+      "experiment": "Compare metrics with and without these records.",
+      "priority": 14
+    },
+    {
+      "for": "DMI-007",
+      "experiment": "Re-train with early stopping on eval_loss and compare held-out task metrics.",
+      "priority": 15
+    },
+    {
+      "for": "DMI-009",
+      "experiment": "Inspect the listed pairs and deduplicate if they carry the same content.",
+      "priority": 16
+    },
+    {
+      "for": "DMI-014",
+      "experiment": "Tokenize the same sample with a candidate tokenizer and compare tokens_per_word.",
+      "priority": 17
+    }
+  ],
+  "summary": {
+    "findings_by_severity": {
+      "CRITICAL": 1,
+      "HIGH": 6,
+      "MEDIUM": 7,
+      "LOW": 0,
+      "INFO": 1
+    },
+    "findings_by_status": {
+      "CONFIRMED": 9,
+      "POTENTIAL": 6,
+      "INCONCLUSIVE": 0
+    },
+    "top_findings": [
+      "DMI-001 [CRITICAL/CONFIRMED] Evaluation records present verbatim in training (test.jsonl)",
+      "DMI-002 [HIGH/CONFIRMED] Metric regressed: eval_accuracy",
+      "DMI-003 [HIGH/CONFIRMED] Metric regressed: eval_loss",
+      "DMI-004 [HIGH/CONFIRMED] Exact duplicate records (within this file)",
+      "DMI-005 [HIGH/CONFIRMED] Degenerate repetition"
+    ]
+  },
+  "limitations": [
+    "Compatibility unverified for: eval_protocol (not present in both configs).",
+    "Contamination by 13-gram overlap ignores n-grams present in >= 1% of training records (and >= 5 records) to avoid flagging shared templates.",
+    "Differences between configurations are associations; causality requires controlled re-runs.",
+    "Grounding checks are lexical (content-word overlap and numbers vs. the provided reference); they do not prove factual correctness or detect hallucinations without references.",
+    "Only lexical overlap is measured; paraphrased or translated contamination is not detected.",
+    "Single-run differences do not establish statistical significance; repeat with several seeds.",
+    "max_length not provided; truncation and context waste not evaluated."
+  ]
+}

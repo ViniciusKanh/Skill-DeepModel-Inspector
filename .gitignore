@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+
+# Node
+frontend/node_modules/
+
+# App local state (projects, reports)
+workspace/
+
+# Transfer/archive leftovers
+claude/transfer/
+dist/*-project-source.zip
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Secrets (never commit)
+.env
+.env.*
+!.env.example
