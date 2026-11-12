@@ -37,7 +37,9 @@ Accepted formats: see `agensi/deepmodel-inspector/references/input-formats.md`.
 Dashboard · Training Diagnostics (loss/LR/perplexity/grad-norm charts with series toggles, range zoom, convergence checks) ·
 Dataset Quality (duplicates, schema, Unicode, length histogram, split contamination) · Tokenizer Efficiency (needs your
 tokens; nothing is simulated) · Generation Behavior (distinct-n, repetition, configs, filtered examples) · Experiment
-Comparison (metrics, hyperparameters, compatibility guard, side-by-side curves) · Root-Cause Investigation · Reports ·
+Comparison (metrics, hyperparameters, compatibility guard, side-by-side curves) · Root-Cause Investigation ·
+**Model Lab** (live inspection of local/online models) · **Production Monitor** (logs per day/week, alerts, model
+health history; see `docs/live-inspection.md`) · Reports ·
 Projects & Experiments · Settings (CRT effects, animations, language, roots, limits, version, limitations).
 
 ## Reading results

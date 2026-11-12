@@ -11,6 +11,8 @@ const Tokenizer = lazy(() => import("../pages/Tokenizer"));
 const Generation = lazy(() => import("../pages/Generation"));
 const Compare = lazy(() => import("../pages/Compare"));
 const Investigate = lazy(() => import("../pages/Investigate"));
+const Lab = lazy(() => import("../pages/Lab"));
+const Monitor = lazy(() => import("../pages/Monitor"));
 const Reports = lazy(() => import("../pages/Reports"));
 const Projects = lazy(() => import("../pages/Projects"));
 const SettingsPage = lazy(() => import("../pages/Settings"));
@@ -35,6 +37,8 @@ function Shell() {
                 <Route path="/generation" element={<Generation />} />
                 <Route path="/compare" element={<Compare />} />
                 <Route path="/investigate" element={<Investigate />} />
+                <Route path="/lab" element={<Lab />} />
+                <Route path="/monitor" element={<Monitor />} />
                 <Route path="/reports" element={<Reports />} />
                 <Route path="/projects" element={<Projects />} />
                 <Route path="/settings" element={<SettingsPage />} />

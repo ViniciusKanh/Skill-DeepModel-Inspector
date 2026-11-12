@@ -11,7 +11,8 @@
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-39FF88?style=for-the-badge&labelColor=1A1030" />
   <img alt="Python" src="https://img.shields.io/badge/python-3.11%20%7C%203.13-00E5FF?style=for-the-badge&logo=python&logoColor=white&labelColor=1A1030" />
-  <img alt="Tests" src="https://img.shields.io/badge/tests-83%20passed-39FF88?style=for-the-badge&logo=pytest&logoColor=white&labelColor=1A1030" />
+  <a href="https://github.com/ViniciusKanh/Skill-DeepModel-Inspector/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/ViniciusKanh/Skill-DeepModel-Inspector/actions/workflows/ci.yml/badge.svg" /></a>
+  <a href="https://github.com/ViniciusKanh/Skill-DeepModel-Inspector/actions/workflows/release.yml"><img alt="Release" src="https://github.com/ViniciusKanh/Skill-DeepModel-Inspector/actions/workflows/release.yml/badge.svg" /></a>
   <img alt="Coverage" src="https://img.shields.io/badge/engine%20coverage-92%25-A255FF?style=for-the-badge&labelColor=1A1030" />
 </p>
 <p>
@@ -75,6 +76,7 @@ Runs on your machine, read-only, no network calls, no pickle loading, credential
 - [Diagnostic rules](#-diagnostic-rules)
 - [Supported inputs](#-supported-inputs)
 - [Command-line interface](#-command-line-interface)
+- [Live inspection & production monitoring](#-live-inspection--production-monitoring)
 - [Desktop-style app](#-desktop-style-app)
 - [Agent skill (Agensi)](#-agent-skill-agensi)
 - [Security & privacy](#-security--privacy)
@@ -99,13 +101,30 @@ Runs on your machine, read-only, no network calls, no pickle loading, credential
 | ⚖️ **Experiment comparison** | Hyperparameter diff, metric regressions with direction, compatibility guard (tokenizer / vocab / eval set / protocol), curve best vs. final |
 | 💾 **Checkpoint metadata** | safetensors headers (tensors, parameters, dtypes) and JSON configs only — pickle files are listed, never loaded |
 | 🧠 **Root-cause engine** | Question intents in English and Portuguese, cross-artifact hypotheses, prioritized experiments, missing-artifact requests |
+| 🛰️ **Live model inspection** | Probe any **local or online** model through an OpenAI-compatible API (Ollama, LM Studio, llama.cpp, vLLM, OpenAI…): instruction/format following, closed-answer accuracy, context grounding, prompt-injection resistance, determinism, repetition stress, latency, errors and throughput |
+| 📡 **Production monitoring** | Exported logs per day/week → error, empty, degenerate and truncation rates, latency p50/p95, diversity drift with bootstrap CIs, configurable alert thresholds and CI-friendly exit codes |
 | 📄 **Reports** | JSON, Markdown and static HTML with 11 standard sections |
 
 ---
 
 ## 🖼️ Screenshots
 
-> Real screenshots of the local app running on Windows 11 with the bundled **DEMO** lab (synthetic data, real engine).
+> Captured automatically from the running app by [`tools/capture_media.py`](tools/capture_media.py) (GitHub Action
+> **docs-media**) with the bundled **DEMO** lab — synthetic data, real engine.
+
+<!-- MEDIA:START -->
+
+<div align="center">
+
+<img src="docs/media/tour.gif" alt="DeepModel Inspector tour: demo audit, investigation, Model Lab, Hugging Face, monitor" width="100%" />
+
+▶️ [Full-quality video (MP4)](docs/media/tour.mp4)
+
+<sub>Captured automatically from the running app on 2026-11-12 (synthetic demo data, simulated model server and simulated Hugging Face Hub; analyses are real).</sub>
+
+</div>
+
+<!-- MEDIA:END -->
 
 <div align="center">
 
@@ -115,7 +134,15 @@ Runs on your machine, read-only, no network calls, no pickle loading, credential
 ### Root-Cause Investigation
 <img src="docs/images/screens/07-investigate.png" alt="Root-cause investigation" width="100%" />
 
+### Model Lab — live inspection of a local or online model
+<img src="docs/images/screens/11-model-lab.png" alt="Model Lab" width="100%" />
+
+### Production Monitor
+<img src="docs/images/screens/13-production-monitor.png" alt="Production monitor" width="100%" />
+
 </div>
+
+<div align="center">
 
 <table>
 <tr>
@@ -134,7 +161,17 @@ Runs on your machine, read-only, no network calls, no pickle loading, credential
 <td width="50%"><b>Projects & Experiments</b><br/><img src="docs/images/screens/09-projects.png" alt="Projects" /></td>
 <td width="50%"><b>Settings</b><br/><img src="docs/images/screens/10-settings.png" alt="Settings" /></td>
 </tr>
+<tr>
+<td width="50%"><b>Model Lab — probe transcript & ask</b><br/><img src="docs/images/screens/12-model-lab-transcript.png" alt="Probe transcript" /></td>
+<td width="50%"><b>Connection wizard — local servers detected</b><br/><img src="docs/images/screens/15-connect-wizard.png" alt="Connection wizard" /></td>
+</tr>
+<tr>
+<td width="50%"><b>Hugging Face model — inspected without downloading</b><br/><img src="docs/images/screens/14-hf-hub.png" alt="Hugging Face model card" /></td>
+<td width="50%"></td>
+</tr>
 </table>
+
+</div>
 
 <details>
 <summary><b>🎨 Design references (brand identity & prototypes)</b></summary>
@@ -170,7 +207,14 @@ Typography: **Press Start 2P** (titles) · **IBM Plex Mono** (data) · **VT323**
 | FastAPI + uvicorn | installed via `.[app]` | desktop-style app |
 | Node.js | 18+ (optional) | only to rebuild/develop the UI (a production build is included) |
 
-### 1 · Install
+### 0 · Windows installer (no Python needed)
+
+Download `DeepModelInspector-Setup-<version>.exe` from **GitHub Releases** (or, without a release, from
+**Actions → release → Run workflow → artifact `DeepModelInspector-windows`**), run it (per-user install, no admin),
+and open **DeepModel Inspector** from the Start menu. Your data lives in `%LOCALAPPDATA%\DeepModelInspector`.
+Build it yourself: `scripts\Build-Installer.ps1` — see [`docs/installer.md`](docs/installer.md).
+
+### 1 · Install from source
 
 ```powershell
 git clone https://github.com/ViniciusKanh/Skill-DeepModel-Inspector.git
@@ -378,6 +422,8 @@ deepmodel checkpoint  --input ./checkpoint-1000
 deepmodel audit       --input ./experiment --output ./reports        # audit.json + .md + .html
 deepmodel report      --input ./reports/audit.json --format markdown
 deepmodel investigate --input ./experiment --question "Why is validation loss increasing?"
+deepmodel probe       --base-url http://localhost:11434/v1 --model llama3.1:8b
+deepmodel monitor     --input ./prod_logs --period week --fail-on HIGH
 ```
 
 | Option | Description |
@@ -388,7 +434,7 @@ deepmodel investigate --input ./experiment --question "Why is validation loss in
 | `--root DIR` | authorized root (repeatable; default = current directory) |
 | `--max-mb`, `--max-records` | input limits |
 
-Exit codes: `0` ok · `2` invalid input · `3` security refusal.
+Exit codes: `0` ok · `2` invalid input · `3` security refusal · `4` alert threshold reached (`--fail-on`).
 
 <details>
 <summary><b>Example answer (real output on the demo)</b></summary>
@@ -414,10 +460,49 @@ Next experiment: re-generate the same prompts with repetition_penalty=1.15 or te
 
 ---
 
+## 🛰️ Live inspection & production monitoring
+
+```mermaid
+flowchart LR
+    M1[🦙 Ollama · LM Studio<br/>llama.cpp · vLLM] -->|OpenAI-compatible API| P
+    M2[☁️ OpenAI & compatible<br/>online APIs] -->|explicit consent| P
+    P[🛰️ Probe suite<br/>~44 calls] --> A[📊 PRB.* + GEN.* rules]
+    L[📜 Production logs<br/>JSONL per day/week] --> MON[📡 MON.* rules<br/>thresholds · drift]
+    A & MON --> R[🧠 Root-cause engine] --> H[📈 Model health history · alerts · reports]
+```
+
+```bash
+# Inspect a local model (Ollama)
+deepmodel probe --base-url http://localhost:11434/v1 --model llama3.1:8b --suite standard
+# Inspect an online model (key from env var, explicit consent)
+deepmodel probe --base-url https://api.openai.com/v1 --model gpt-4o-mini --api-key-env OPENAI_API_KEY --allow-remote
+# Monitor production logs weekly; exit code 4 when HIGH alerts exist
+deepmodel monitor --input ./prod_logs --period week --fail-on HIGH
+```
+
+```bash
+# Inspect a Hugging Face repo WITHOUT downloading the weights (metadata + safetensors headers only)
+deepmodel hub --repo Qwen/Qwen2.5-0.5B-Instruct --format markdown
+```
+
+Every connected model becomes an experiment of the **Live models** project (probe transcripts are saved there), so
+Dashboard, Generation, Investigate and Reports work on it too. **Hugging Face models**: inspect any repo without
+downloading (size, memory per quantization, context, KV cache, chat template, license, pickle / remote-code risks),
+or run it through HF Inference Providers (`https://router.huggingface.co/v1`, free HF token) and probe its behaviour.
+
+In the app: **Model Lab** (connection wizard with auto-detection of local servers and online provider cards → test connection → INSPECT with a live retro console → scorecard, latency,
+findings, transcript, ask) and **Production Monitor** (per-period quality & latency charts, alerts, model health
+history). No model at hand? **Simulated demo** starts a clearly labelled scripted local server with planted flaws.
+
+Full guide: [`docs/live-inspection.md`](docs/live-inspection.md)
+
+---
+
 ## 🖥️ Desktop-style app
 
-A local web app (React + TypeScript + Vite + Tailwind + Recharts, served by FastAPI on `127.0.0.1`) with 10 screens:
-**Dashboard · Training · Dataset · Tokenizer · Generation · Compare · Investigate · Reports · Projects · Settings**.
+A local web app (React + TypeScript + Vite + Tailwind + Recharts, served by FastAPI on `127.0.0.1`) with 12 screens:
+**Dashboard · Training · Dataset · Tokenizer · Generation · Compare · Investigate · Model Lab · Production Monitor ·
+Reports · Projects · Settings**.
 
 - Interactive charts: series toggles, range zoom (brush), tooltips and range statistics.
 - Real job progress and cooperative cancellation; indeterminate loaders when progress is unknown.
@@ -462,7 +547,9 @@ The skill package does **not** include the app; both are distributed separately.
 - **Path confinement** to authorized roots; traversal attempts refused.
 - **Secrets refused**: `.env`, keys, `.ssh`, `.aws`, credential files.
 - **No unsafe deserialization**: pickle formats (`.bin`, `.pt`, `.ckpt`, `.pkl`) are never opened.
-- **No network**: no outbound calls; the app API binds to `127.0.0.1` with TrustedHost and restricted CORS.
+- **No network by default**: offline analyses make no outbound calls; live probes only contact the endpoint you
+  register (remote endpoints need explicit consent, redirects blocked, API keys never written to disk). The app API
+  binds to `127.0.0.1` with TrustedHost and restricted CORS.
 - **Data is data**: instruction-like content in datasets is flagged, never executed; HTML output is escaped.
 - **Redacted evidence**: e-mails, long numbers and key-like strings are masked in samples.
 
@@ -473,9 +560,10 @@ The skill package does **not** include the app; both are distributed separately.
 | Suite | Command | Result |
 |---|---|---|
 | Engine (Python 3.13 / 3.11) | `pytest -q` | 68 passed · 92% line coverage |
+| Live probe & monitor | `pytest tests/test_live.py` | 12 passed (simulated server: flawed vs. healthy, errors, redirects, consent, cancel) |
 | Engine on Windows 11 (Python 3.13) | `pytest -q` | 68 passed |
-| Local API | `pytest tests/test_api.py` | 9 passed |
-| Browser E2E (Playwright) | `pytest tests/e2e` | 6 passed — full demo flow, error states, 4 viewports |
+| Local API | `pytest tests/test_api.py` | 12 passed |
+| Browser E2E (Playwright) | `pytest tests/e2e` | 7 passed — demo flow, Model Lab, Production Monitor, error states, 4 viewports |
 | Frontend | `npm run typecheck && npm test && npm run build` | 0 TS errors · 8 passed · build OK |
 | Lint | `ruff check` · `ruff format --check` | clean |
 | Skill isolation | `python tools/package_agensi.py` | 12/12 isolated runs OK |
@@ -517,6 +605,8 @@ deepmodel-inspector/
 | [Frontend architecture](docs/frontend-architecture.md) | API endpoints, data flow, security |
 | [UI design system](docs/ui-design-system.md) | tokens, typography, components, accessibility |
 | [App user guide](docs/frontend-user-guide.md) | install, demo, your own data |
+| [Live inspection & monitoring](docs/live-inspection.md) | probing local/online models, production logs, alerts |
+| [Deployment architecture](docs/deployment-architecture.md) | Desktop (Microsoft Store), Cloud (Vercel + workers), Connector |
 | [Validation results](docs/validation-results.md) | real test runs and checksums |
 | [Limitations](docs/limitations.md) | what the tool does **not** do |
 | [Agensi listing](docs/agensi-listing.md) · [compliance](docs/agensi-compliance.md) · [publishing](docs/PUBLISH_AGENSI.md) | marketplace material |
@@ -541,6 +631,8 @@ deepmodel-inspector/
 - [x] Root-cause engine with EN/PT question intents
 - [x] Agent skill with standalone scripts and validated ZIP
 - [x] Local desktop-style app with DEMO mode
+- [x] Live inspection of local/online models (OpenAI-compatible) and batch production monitoring
+- [ ] Streaming ingestion / OpenTelemetry and Langfuse importers
 - [ ] Semantic near-duplicate / contamination detection (optional embeddings)
 - [ ] PDF export
 - [ ] Optional local LLM summarization of reports

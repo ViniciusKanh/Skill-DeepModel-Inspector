@@ -466,6 +466,30 @@ def generate(root: Path) -> None:
         for f in (runs / name).iterdir():
             (demo / "runs" / name).mkdir(parents=True, exist_ok=True)
             (demo / "runs" / name / f.name).write_bytes(f.read_bytes())
+    generate_production(root / "synthetic_production")
+
+
+def generate_production(d: Path) -> None:
+    """Logs de produção sintéticos: 3 semanas saudáveis e a 4ª degradada (repetição, erros, latência)."""
+    rng = random.Random(99)
+    for w in range(1, 5):
+        rows = []
+        for i in range(60):
+            day = 5 + (w - 1) * 7 + i % 7  # 2026-10-05 é segunda-feira (semanas ISO W41..W44)
+            bad = w == 4 and i % 3 == 0
+            out = ("I can help with that. " * 10) if bad else sentence(rng, 30)
+            rows.append(
+                {
+                    "timestamp": f"2026-{10 + (day > 31)}-{(day - 1) % 31 + 1:02d}T{8 + i % 10:02d}:00:00Z",
+                    "model": "prod-model-v1",
+                    "prompt": sentence(rng, 10),
+                    "output": "" if (w == 4 and i % 20 == 1) else out,
+                    "latency_ms": round(rng.uniform(400, 1800) * (9 if w == 4 and i % 4 == 0 else 1), 1),
+                    "finish_reason": "length" if bad else "stop",
+                    "error": "timeout" if (w == 4 and i % 10 == 5) else None,
+                }
+            )
+        write_jsonl(d / f"prod_2026-W{40 + w}.jsonl", rows)
 
 
 if __name__ == "__main__":

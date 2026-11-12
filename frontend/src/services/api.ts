@@ -1,5 +1,6 @@
 // Cliente HTTP da API local. Toda a análise acontece no backend Python; aqui só há transporte.
 import type {
+  HistoryPoint, ProbeRecord, Target, TargetTest,
   Experiment, FsEntry, FullReport, Job, Project, RecordRow, ReportMeta, SeriesResponse, ServerSettings, Status,
 } from "../types/api";
 
@@ -48,7 +49,23 @@ export const api = {
   deleteExperiment: (pid: string, eid: string) => req<void>(`/api/projects/${pid}/experiments/${eid}`, { method: "DELETE" }),
   demo: () => req<Project>("/api/demo", { method: "POST" }),
   fsList: (path: string) => req<{ path: string; parent: string | null; entries: FsEntry[] }>(`/api/fs/list?${q({ path })}`),
-  submitJob: (body: { project_id: string; experiment_id?: string | null; kind: string; question?: string; params?: Record<string, unknown> }) =>
+  targets: () => req<Target[]>("/api/targets"),
+  createTarget: (body: { name: string; base_url: string; model: string; api_key?: string; api_key_env?: string; allow_remote: boolean; timeout?: number }) =>
+    req<Target>("/api/targets", { method: "POST", body: JSON.stringify(body) }),
+  deleteTarget: (id: string) => req<void>(`/api/targets/${id}`, { method: "DELETE" }),
+  testTarget: (id: string) => req<TargetTest>(`/api/targets/${id}/test`, { method: "POST" }),
+  connectCatalog: () => req<{ local: any[]; online: any[] }>("/api/connect/catalog"),
+  discover: () => req<any[]>("/api/connect/discover"),
+  connectModels: (body: { base_url: string; api_key?: string; api_key_env?: string; allow_remote: boolean }) =>
+    req<{ ok: boolean; models: string[]; error: string | null }>("/api/connect/models", { method: "POST", body: JSON.stringify(body) }),
+  hubToken: () => req<{ session_token: boolean; env_token: boolean }>("/api/hub/token"),
+  setHubToken: (token: string) => req<void>("/api/hub/token", { method: "POST", body: JSON.stringify({ token }) }),
+  clearHubToken: () => req<void>("/api/hub/token", { method: "DELETE" }),
+  simulatedTargets: () => req<Target[]>("/api/targets/simulated", { method: "POST" }),
+  probeRecords: (rid: string) => req<ProbeRecord[]>(`/api/reports/${rid}/probe-records`),
+  history: (id: string) => req<HistoryPoint[]>(`/api/targets/${id}/history`),
+  ask: (reportId: string, question: string) => req<ReportMeta>(`/api/reports/${reportId}/ask`, { method: "POST", body: JSON.stringify({ question }) }),
+  submitJob: (body: { project_id?: string | null; experiment_id?: string | null; kind: string; question?: string; params?: Record<string, unknown> }) =>
     req<Job>("/api/jobs", { method: "POST", body: JSON.stringify(body) }),
   job: (id: string) => req<Job>(`/api/jobs/${id}`),
   jobs: () => req<Job[]>("/api/jobs"),

@@ -219,3 +219,106 @@ def test_demo_mode(client, synth, monkeypatch):
     )
     meta = c.get("/api/reports", params={"project_id": p["id"]}).json()[0]
     assert j["status"] == "done" and meta["demo"] is True
+
+
+def test_live_probe_flow(client, synth, monkeypatch):
+    import backend.api.main as m
+
+    monkeypatch.setattr(m, "EXAMPLES", m.REPO_ROOT / "examples")
+    c = TestClient(m.create_app(client.app.state.store))
+    ts = c.post("/api/targets/simulated").json()
+    assert len(ts) == 2 and all(t["simulated"] and t["local"] for t in ts)
+    flawed = next(t for t in ts if t["model"] == "demo-flawed")
+    t = c.post(f"/api/targets/{flawed['id']}/test").json()
+    assert t["ok"] and t["model_listed"] is True
+    j = wait(
+        c,
+        c.post("/api/jobs", json={"kind": "probe", "params": {"target_id": flawed["id"], "suite": "quick"}}).json()[
+            "id"
+        ],
+    )
+    assert j["status"] == "done" and j["progress_done"] == j["progress_total"] and any("FAIL" in ln for ln in j["log"])
+    full = c.get(f"/api/reports/{j['report_id']}").json()
+    assert full["meta"]["simulated"] is True and "PRB.INJECTION" in {f["rule"] for f in full["report"]["findings"]}
+    hist = c.get(f"/api/targets/{flawed['id']}/history").json()
+    assert hist and hist[-1]["pass_rates"]["injection"] < 1
+    a = c.post(
+        f"/api/reports/{j['report_id']}/ask", json={"question": "Is my model vulnerable to prompt injection?"}
+    ).json()
+    assert a["answer_status"] == "CONFIRMED" and a["kind"] == "investigate"
+    # o modelo conectado vira experimento do projeto "Live models" com a transcrição gravada
+    assert j["project_id"] == "prj-live" and j["experiment_id"] == flawed["experiment_id"]
+    proj = c.get("/api/projects/prj-live").json()
+    exp = next(e for e in proj["experiments"] if e["id"] == flawed["experiment_id"])
+    tr = list((Path(proj["root"]) / exp["items"][0]).glob("generations_probe_*.jsonl"))
+    assert len(tr) == 1 and tr[0].read_text(encoding="utf-8").count("\n") == len(
+        c.get(f"/api/reports/{j['report_id']}/probe-records").json()
+    )
+    au = wait(
+        c,
+        c.post("/api/jobs", json={"kind": "audit", "project_id": "prj-live", "experiment_id": exp["id"]}).json()["id"],
+    )
+    assert au["status"] == "done", au
+    rep = c.get(f"/api/reports/{au['report_id']}").json()
+    assert any(f["category"] == "generation" for f in rep["report"]["findings"]), rep["report"]["findings"][:3]
+
+
+def test_target_security(client, tmp_path):
+    r = client.post("/api/targets", json={"name": "x", "base_url": "https://api.example.com/v1", "model": "m"})
+    assert r.status_code == 403
+    r = client.post(
+        "/api/targets",
+        json={
+            "name": "x",
+            "base_url": "https://api.example.com/v1",
+            "model": "m",
+            "allow_remote": True,
+            "api_key": "sk-TESTSECRET123456789",
+        },
+    )
+    assert r.status_code == 201 and r.json()["has_session_key"] and not r.json()["local"]
+    ws = client.app.state.store.home
+    assert all("TESTSECRET" not in p.read_text(encoding="utf-8") for p in ws.glob("*.json"))
+    assert (
+        client.post("/api/targets", json={"name": "x", "base_url": "file:///etc/passwd", "model": "m"}).status_code
+        == 422
+    )
+    assert client.post("/api/jobs", json={"kind": "probe", "params": {"target_id": "nope"}}).status_code == 404
+
+
+def test_monitor_job(client, synth):
+    pid, _ = project(client, synth, ["demo_experiment"])
+    j = wait(
+        client,
+        client.post(
+            "/api/jobs",
+            json={"project_id": pid, "kind": "monitor", "params": {"path": "synthetic_production", "period": "week"}},
+        ).json()["id"],
+    )
+    assert j["status"] == "done"
+    rep = client.get(f"/api/reports/{j['report_id']}").json()["report"]
+    assert "MON.REPETITION" in {f["rule"] for f in rep["findings"]}
+    assert len(rep["sections"]["monitor"][0]["metrics"]["timeline"]) == 4
+
+
+def test_connect_wizard_endpoints(client):
+    import importlib.util as iu
+
+    spec = iu.spec_from_file_location("fls", Path(__file__).resolve().parents[1] / "examples" / "fake_llm_server.py")
+    mod = iu.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    srv, port = mod.start(0)
+    client.app.state.local_servers = [
+        {"id": "sim", "label": "Simulated", "port": port, "base_url": f"http://127.0.0.1:{port}/v1", "help": "-"},
+        {"id": "dead", "label": "Nothing", "port": 9, "base_url": "http://127.0.0.1:9/v1", "help": "start it"},
+    ]
+    found = {s["id"]: s for s in client.get("/api/connect/discover").json()}
+    assert found["sim"]["running"] and "demo-good" in found["sim"]["models"] and not found["dead"]["running"]
+    cat = client.get("/api/connect/catalog").json()
+    assert {p["id"] for p in cat["online"]} >= {"openai", "anthropic", "gemini", "custom"}
+    r = client.post("/api/connect/models", json={"base_url": f"http://127.0.0.1:{port}/v1"}).json()
+    assert r["ok"] and len(r["models"]) == 2
+    r = client.post("/api/connect/models", json={"base_url": "http://127.0.0.1:9/v1"}).json()
+    assert not r["ok"] and "running" in r["error"]
+    assert client.post("/api/connect/models", json={"base_url": "https://api.example.com/v1"}).status_code == 403
+    srv.shutdown()

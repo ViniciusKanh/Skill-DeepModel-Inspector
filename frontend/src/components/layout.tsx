@@ -2,6 +2,8 @@
 import { type ReactNode } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
+  Activity,
+  Bot,
   BarChart3, ChevronsLeft, ChevronsRight, Cpu, Database, FileText, FolderKanban, GitCompare, LayoutGrid, PlayCircle,
   Search, Settings, X,
 } from "lucide-react";
@@ -19,6 +21,8 @@ export const NAV: { to: string; key: I18nKey; icon: ReactNode }[] = [
   { to: "/generation", key: "generation", icon: <PlayCircle size={18} /> },
   { to: "/compare", key: "compare", icon: <GitCompare size={18} /> },
   { to: "/investigate", key: "investigate", icon: <Search size={18} /> },
+  { to: "/lab", key: "lab", icon: <Bot size={18} /> },
+  { to: "/monitor", key: "monitor", icon: <Activity size={18} /> },
   { to: "/reports", key: "reports", icon: <FileText size={18} /> },
   { to: "/projects", key: "projects", icon: <FolderKanban size={18} /> },
   { to: "/settings", key: "settings", icon: <Settings size={18} /> },

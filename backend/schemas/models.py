@@ -7,7 +7,18 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field
 
 AnalysisKind = Literal[
-    "audit", "investigate", "train", "dataset", "leakage", "tokenizer", "generation", "compare", "checkpoint"
+    "audit",
+    "investigate",
+    "train",
+    "dataset",
+    "leakage",
+    "tokenizer",
+    "generation",
+    "compare",
+    "checkpoint",
+    "probe",
+    "monitor",
+    "hub",
 ]
 JobState = Literal["queued", "running", "done", "failed", "cancelled"]
 
@@ -76,7 +87,7 @@ class ExperimentIn(BaseModel):
 
 
 class JobIn(BaseModel):
-    project_id: str
+    project_id: str | None = None
     experiment_id: str | None = None
     kind: AnalysisKind
     question: str | None = Field(None, max_length=500)
@@ -95,6 +106,7 @@ class JobOut(BaseModel):
     message: str = ""
     report_id: str | None = None
     error: str | None = None
+    log: list[str] = Field(default_factory=list)
 
 
 class ReportMeta(BaseModel):
@@ -111,8 +123,54 @@ class ReportMeta(BaseModel):
     findings_by_status: dict[str, int] = Field(default_factory=dict)
     analyses_run: list[str] = Field(default_factory=list)
     answer_status: str | None = None
+    target_id: str | None = None
+    target_name: str | None = None
+    simulated: bool = False
 
 
 class FileInspectIn(BaseModel):
     project_id: str
     path: str = Field(min_length=1, max_length=1024)
+
+
+class TargetIn(BaseModel):
+    name: str = Field(min_length=1, max_length=80)
+    base_url: str = Field(min_length=8, max_length=500)
+    model: str = Field(min_length=1, max_length=200)
+    api_key: str | None = Field(None, max_length=500)
+    api_key_env: str | None = Field(None, max_length=100, pattern=r"^[A-Za-z_][A-Za-z0-9_]*$")
+    allow_remote: bool = False
+    timeout: float = Field(60.0, ge=1, le=600)
+
+
+class TargetOut(BaseModel):
+    id: str
+    name: str
+    base_url: str
+    model: str
+    local: bool
+    simulated: bool = False
+    api_key_env: str | None = None
+    has_session_key: bool = False
+    timeout: float = 60.0
+    created: str
+    project_id: str | None = None
+    experiment_id: str | None = None
+    folder: str | None = None
+
+
+class AskIn(BaseModel):
+    question: str = Field(min_length=1, max_length=500)
+
+
+class ModelsIn(BaseModel):
+    base_url: str = Field(min_length=8, max_length=500)
+    api_key: str | None = Field(None, max_length=500)
+    api_key_env: str | None = Field(None, max_length=100, pattern=r"^[A-Za-z_][A-Za-z0-9_]*$")
+    allow_remote: bool = False
+
+
+class HubTokenIn(BaseModel):
+    """Token do Hugging Face mantido apenas em memória durante a sessão."""
+
+    token: str = Field(..., min_length=8, max_length=200, pattern=r"^[A-Za-z0-9_\-]+$")

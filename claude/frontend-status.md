@@ -1,5 +1,14 @@
 # Frontend — status de execução
 
+## Atualização 2026-11-12 — inspeção ao vivo e monitoramento
+- Motor: `probe/` (cliente OpenAI-compatível stdlib, suíte ~44 sondas, regras PRB.*), `analyzers/monitor.py` (MON.*),
+  `diagnostics/live.py` (intenções/hipóteses RC.LIVE_* sem alterar rootcause.py → skill/ZIP inalterados).
+- CLI: `deepmodel probe` (--allow-remote obrigatório p/ endpoints online, --api-key-env), `deepmodel monitor` (--fail-on → exit 4).
+- API: /api/targets (chave só em memória), /test, /simulated, /history, jobs probe/monitor com console (log), /reports/{id}/ask, /probe-records.
+- App: telas Model Lab e Production Monitor. Servidor simulado `examples/fake_llm_server.py` (rotulado SIMULATED).
+- Testes: pytest 99 passed (3.13) · 80 passed (3.11) · vitest 8 · tsc OK · build OK · ruff OK.
+- Pendente: validar contra um modelo real (Ollama/LM Studio/OpenAI) no Windows; importadores OpenTelemetry/Langfuse; streaming.
+
 Última atualização: 2026-11-09. Estado: **Fase 1 e Fase 2 concluídas**; pendências abaixo.
 
 ## Implementado
@@ -28,3 +37,6 @@
 
 ## Próxima ação recomendada
 No Windows: `pip install -e ".[app]"` → `.\scripts\Start-DeepModel.ps1` → fluxo DEMO; opcional `pip install -e ".[ui-test]"; playwright install chromium; pytest tests/e2e`.
+
+## 2026-11-12 — HF e Live models
+- Model Lab: opção Hugging Face (inspecionar sem download / rodar via HF Inference Providers), token HF em memória; atalhos para Dashboard/Generation/Investigate; Dashboard com ficha HF (kinds probe/hub). e2e 9 passed (screens 18-19).

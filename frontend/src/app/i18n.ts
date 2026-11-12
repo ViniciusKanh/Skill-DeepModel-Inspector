@@ -9,6 +9,8 @@ const dict = {
   generation: ["Generation Behavior", "Comportamento de Geração"],
   compare: ["Experiment Comparison", "Comparação de Experimentos"],
   investigate: ["Root-Cause Investigation", "Investigação de Causa Raiz"],
+  lab: ["Model Lab (live)", "Laboratório de Modelos"],
+  monitor: ["Production Monitor", "Monitor de Produção"],
   reports: ["Reports", "Relatórios"],
   projects: ["Projects & Experiments", "Projetos e Experimentos"],
   settings: ["Settings", "Configurações"],

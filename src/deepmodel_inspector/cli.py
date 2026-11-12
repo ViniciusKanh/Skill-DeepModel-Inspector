@@ -15,11 +15,11 @@ from typing import Any
 from deepmodel_inspector.analyzers import checkpoint, compare, dataset, generation, leakage, tokenizer, training
 from deepmodel_inspector.core.common import VERSION, dump_json
 from deepmodel_inspector.diagnostics.inventory import run_audit, scan
-from deepmodel_inspector.diagnostics.rootcause import consolidate
+from deepmodel_inspector.diagnostics.live import consolidate
 from deepmodel_inspector.reporting.render import to_html, to_markdown
 from deepmodel_inspector.security.guard import SecurityError, safe_input_path, safe_output_path
 
-EXIT_OK, EXIT_ERROR, EXIT_SECURITY = 0, 2, 3
+EXIT_OK, EXIT_ERROR, EXIT_SECURITY, EXIT_THRESHOLD = 0, 2, 3, 4
 
 
 def _common(p: argparse.ArgumentParser) -> None:
@@ -80,6 +80,36 @@ def build_parser() -> argparse.ArgumentParser:
     s = sub.add_parser("investigate", help="Evidence-based answer to a question about an experiment directory.")
     s.add_argument("--input", "-i", required=True)
     s.add_argument("--question", "-q", required=True)
+    s = sub.add_parser("probe", help="Live behavioural inspection of a model via an OpenAI-compatible API.")
+    s.add_argument(
+        "--base-url", required=True, help="e.g. http://localhost:11434/v1 (Ollama) or https://api.openai.com/v1"
+    )
+    s.add_argument("--model", required=True)
+    s.add_argument("--api-key-env", default=None, help="Name of the environment variable holding the API key.")
+    s.add_argument("--suite", choices=("quick", "standard", "custom"), default="standard")
+    s.add_argument("--prompts", default=None, help="Optional JSONL with prompt[, expected, reference].")
+    s.add_argument("--max-calls", type=int, default=200)
+    s.add_argument("--timeout", type=float, default=60.0)
+    s.add_argument(
+        "--allow-remote",
+        action="store_true",
+        help="Required for non-localhost endpoints: probe prompts will be sent to that server.",
+    )
+    s = sub.add_parser("hub", help="Inspect a Hugging Face model repo WITHOUT downloading weights (metadata only).")
+    s.add_argument("--repo", required=True, help="e.g. Qwen/Qwen2.5-0.5B-Instruct")
+    s.add_argument("--revision", default="main")
+    s.add_argument("--token-env", default="HF_TOKEN", help="Env var with an HF token (only for private/gated repos).")
+    s.add_argument("--hub-url", default="https://huggingface.co", help=argparse.SUPPRESS)
+    s = sub.add_parser("monitor", help="Production monitoring from exported logs (per day/week).")
+    s.add_argument("--input", "-i", required=True, help="Log file or directory of JSONL/CSV logs.")
+    s.add_argument("--period", choices=("day", "week"), default="day")
+    s.add_argument("--thresholds", default=None, help="JSON file overriding default thresholds.")
+    s.add_argument(
+        "--fail-on",
+        choices=("CRITICAL", "HIGH", "MEDIUM", "LOW"),
+        default=None,
+        help="Exit with code 4 when a finding of this severity or worse is present.",
+    )
     for p in sub.choices.values():
         _common(p)
     return ap
@@ -163,6 +193,54 @@ def run(args: argparse.Namespace) -> tuple[dict[str, Any], list[Path]]:
         if "summary" not in rep:
             rep = consolidate([rep])
         return rep, [p]
+    if c == "probe":
+        import os
+
+        from deepmodel_inspector.probe.client import Target
+        from deepmodel_inspector.probe.runner import analyze_records as analyze_probe
+        from deepmodel_inspector.probe.runner import run_probe
+
+        key = os.environ.get(args.api_key_env) if args.api_key_env else None
+        if args.api_key_env and not key:
+            raise ValueError(f"environment variable {args.api_key_env} is not set")
+        tgt = Target(args.base_url, args.model, key, args.timeout)
+        if not tgt.is_local and not args.allow_remote:
+            raise SecurityError(f"remote endpoint {tgt.host}: pass --allow-remote to send probe prompts to it")
+        custom, used = None, []
+        if args.prompts:
+            pp = inp(args.prompts)
+            from deepmodel_inspector.core.common import load_table
+
+            custom, used = load_table(pp, mr)[0], [pp]
+        recs = run_probe(
+            tgt,
+            args.suite,
+            custom,
+            max_calls=args.max_calls,
+            progress=lambda d, t, m: print(f"[{d}/{t}] {m}", file=sys.stderr),
+        )
+        res = analyze_probe(recs, f"{tgt.model}@{tgt.host}")
+        return consolidate(res, None, [{"analysis": "probe", "source": f"{tgt.model}@{tgt.host}"}]), used
+    if c == "hub":
+        import os
+
+        from deepmodel_inspector.probe import hub
+
+        try:
+            res = hub.inspect(args.repo, os.environ.get(args.token_env) or None, args.revision, args.hub_url)
+        except hub.HubError as exc:
+            raise ValueError(f"Hugging Face: {exc}") from None
+        return consolidate([res], None, [{"analysis": "hub", "source": f"hf:{args.repo}"}]), []
+    if c == "monitor":
+        from deepmodel_inspector.analyzers import monitor
+
+        p = inp(args.input, True)
+        files = (
+            [p] if p.is_file() else sorted(x for x in p.rglob("*") if x.suffix.lower() in (".jsonl", ".csv", ".json"))
+        )
+        th = json.loads(inp(args.thresholds).read_text(encoding="utf-8")) if args.thresholds else None
+        res = monitor.analyze_paths([safe_input_path(f, roots, mb) for f in files], args.period, th, mr)
+        return consolidate([res]), [p]
     if c in ("audit", "investigate"):
         p = inp(args.input, True)
         inv, results = run_audit(p, mr)
@@ -195,6 +273,13 @@ def main(argv: list[str] | None = None) -> int:
             (out_dir / "audit.html").write_text(to_html(obj, args.lang), encoding="utf-8")
             print(f"wrote {out_dir / 'audit.json'}, audit.md, audit.html")
             return EXIT_OK
+        code = EXIT_OK
+        fail_on = getattr(args, "fail_on", None)
+        if fail_on:
+            order = ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+            worst = {f["severity"] for f in obj.get("findings", [])}
+            if any(s in worst for s in order[: order.index(fail_on) + 1]):
+                code = EXIT_THRESHOLD
         text = render(obj, args.format, args.lang)
         if args.output:
             out = safe_output_path(args.output, inputs, args.root)
@@ -203,7 +288,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"wrote {out}")
         else:
             sys.stdout.write(text)
-        return EXIT_OK
+        return code
     except SecurityError as exc:
         print(f"security: {exc}", file=sys.stderr)
         return EXIT_SECURITY

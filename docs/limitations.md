@@ -21,5 +21,7 @@
 - **Checkpoints**: weights are never loaded, so NaN weights or numeric tensor health are not inspected.
 - **Platform**: engine tested on Linux (Python 3.11/3.13) and on Windows (Python 3.13, 68 tests passed). The local app's
   PowerShell launcher has not been executed by the developer environment; the app UI was tested in Chromium only.
+- **Live inspection** covers OpenAI-compatible chat APIs only; the probe suite is small and generic (not a benchmark);
+  latency includes network/queueing. Production monitoring is batch (exported logs), not real-time.
 - **Script size guideline**: Agensi suggests < 20 KB of logic per script. Measured sizes are listed in
   `docs/agensi-compliance.md`; three scripts exceed 20 KB when message strings are counted.

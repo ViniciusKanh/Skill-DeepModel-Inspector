@@ -25,7 +25,7 @@ function cards(r: Report) {
 }
 
 export default function Dashboard() {
-  const { data, loading, metas, error } = useLatestReport(undefined, ["audit", "investigate"]);
+  const { data, loading, metas, error } = useLatestReport(undefined, ["audit", "investigate", "probe", "hub"]);
   const nav = useNavigate();
   const { experiment } = useApp();
   const rep = data?.report;
@@ -61,6 +61,7 @@ export default function Dashboard() {
               <StatCard tone="amber" icon={<PlayCircle size={20} />} label="Generation" value={c.genFirst ? fmt(c.genFirst[1].distinct_2, 3) : NA}
                 sub={c.genFirst ? `distinct-2 · ${c.genFirst[1].degenerate_responses} degenerate` : "distinct-2"} />
             </div>
+            {rep.sections.hub?.[0] && <HubCard m={rep.sections.hub[0].metrics as any} />}
             <div className="grid gap-3 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
               <Panel title="Training curve — loss (lower is better)" tone="cyan">
                 {rep.sections.training?.[0]?.series ? (
@@ -126,5 +127,28 @@ export default function Dashboard() {
         );
       })()}
     </ExperimentGate>
+  );
+}
+
+
+// Ficha técnica do repositório do Hugging Face (somente metadados; nada foi baixado).
+function HubCard({ m }: { m: any }) {
+  const gb = (v: number | null | undefined) => (v == null ? NA : v >= 1 ? `${fmt(v, 2)} GB` : `${fmt(v * 1000, 1)} MB`);
+  const count = (n: number) => (n >= 1e9 ? `${(n / 1e9).toFixed(2)} B` : n >= 1e6 ? `${(n / 1e6).toFixed(1)} M` : `${(n / 1e3).toFixed(1)} K`);
+  const rows: [string, string][] = [
+    ["Repository", m.repo_id], ["Architecture", m.architecture ?? NA], ["Parameters", m.parameters_total ? count(m.parameters_total) : NA],
+    ["Weights fp16 / int8 / 4-bit", m.memory_gb ? `${gb(m.memory_gb.fp16)} / ${gb(m.memory_gb.int8)} / ${gb(m.memory_gb.int4)}` : NA],
+    ["Context length", m.context_length ? fmt(m.context_length) : NA], ["KV cache (fp16)", m.kv_cache_mb_per_1k_tokens ? `${fmt(m.kv_cache_mb_per_1k_tokens)} MB / 1k tokens · ${gb(m.kv_cache_gb_full_context)} full context` : NA],
+    ["Layers · heads · KV heads", `${m.layers ?? "?"} · ${m.attention_heads ?? "?"} · ${m.kv_heads ?? "?"}`], ["Vocabulary", m.vocab_size ? fmt(m.vocab_size) : NA],
+    ["Chat template", m.chat_template ? "yes" : "no"], ["License", m.license ?? "not declared"],
+    ["Weight files", `${m.weights_files?.safetensors ?? 0} safetensors · ${m.weights_files?.pickle ?? 0} pickle · ${m.weights_files?.gguf ?? 0} gguf`],
+  ];
+  return (
+    <Panel title="Hugging Face model card — read without downloading" tone="purple">
+      <dl className="grid gap-x-6 gap-y-1 sm:grid-cols-2 text-[13px]">
+        {rows.map(([k, v]) => (<div key={k} className="flex gap-2 min-w-0"><dt className="text-muted w-48 flex-none">{k}</dt><dd className="break-all">{v}</dd></div>))}
+      </dl>
+      <p className="text-[11.5px] text-muted mt-2">Memory covers weights only. Behaviour (quality, hallucination, injection) needs a live probe in Model Lab.</p>
+    </Panel>
   );
 }

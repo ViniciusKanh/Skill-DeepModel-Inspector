@@ -25,7 +25,26 @@
 4. Limiares heurísticos validados somente em dados sintéticos.
 5. Nada foi publicado (GitHub/Agensi).
 
-## Frontend
+## Inspeção ao vivo e monitoramento (2026-11-12)
+- Assistente de conexão (auto-detecção local + cartões de provedores online), veredito em linguagem simples, Start-DeepModel.ps1 ASCII/robusto.
+- Arquitetura de publicação (Desktop/Microsoft Store, Cloud/Vercel+workers, Connector): docs/deployment-architecture.md (proposta, não implementada).
+- Testes: pytest 101 passed (3.13), 80 (3.11), vitest 8.
+Ver `claude/frontend-status.md` e `docs/live-inspection.md`. Próxima ação: testar `deepmodel probe` contra Ollama/LM Studio local.
+
+## HF sem download, projeto Live models, instalador Windows (2026-11-12)
+- `src/deepmodel_inspector/probe/hub.py` + `deepmodel hub --repo`: metadados HF sem baixar pesos (regras HUB.*); token só ao host do Hub; redirecionamentos só Hub/CDN. Testado com Hub simulado (tests/test_hub.py) — NÃO validado contra o Hub real (sandbox sem acesso).
+- Provedor "Hugging Face (Inference Providers)" no catálogo online.
+- Projeto "Live models" (prj-live): cada alvo/repo HF vira experimento; transcrições `generations_probe_*.jsonl`; job `hub`; endpoints `/api/hub/token`.
+- UI: assistente "Hugging Face model", botões Open in Dashboard/Generation/Investigate, ficha HF no Dashboard.
+- Instalador: desktop/launcher.py, desktop/deepmodel.spec, desktop/installer.iss, desktop/icon.ico, scripts/Build-Installer.ps1, .github/workflows/release.yml, docs/installer.md. PyInstaller validado no Linux; build Windows/Inno/workflow pendentes de execução no Windows.
+- Testes: pytest 108 passed (3.13, inclui 9 e2e), 85 passed/3 skipped (3.11), vitest 8, tsc/build OK, ruff OK; skill Agensi e ZIP inalterados.
+- Próxima ação: rodar `scripts\Build-Installer.ps1` no Windows; decidir repo público para Releases; testar `deepmodel hub` com rede real.
+
+## Automação GitHub Actions + mídia (2026-11-12)
+- `.github/workflows/ci.yml` (ruff+pytest Ubuntu/Windows 3.11/3.13; tsc/vitest/build), `release.yml` (instalador), `docs-media.yml` (e2e + `tools/capture_media.py` → capturas, docs/media/tour.mp4 + tour.gif, bloco `<!-- MEDIA -->` do README, commit do bot com [skip ci]).
+- `examples/fake_hf_hub.py` (Hub simulado reutilizado por testes e capturas). Ficha HF: formatação K/M/B e MB.
+- Validado localmente: capture_media OK (GIF 4,6 MB, MP4 0,9 MB), pytest 108, 3.11 85, vitest 8. Workflows NÃO executados no GitHub (sem acesso); YAML validado sintaticamente.
+- Requer no GitHub: Settings → Actions → Workflow permissions = Read and write.
 Ver `claude/frontend-status.md` (app local React + FastAPI, concluído em 2026-11-09).
 
 ## Ponto de retomada

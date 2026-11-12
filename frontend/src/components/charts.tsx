@@ -122,3 +122,45 @@ export function BarsChart(props: { data: { label: string; value: number }[]; col
     </div>
   );
 }
+
+/** Linhas sobre eixo categórico (períodos ou execuções), com séries alternáveis. */
+export function PeriodChart(props: {
+  rows: Record<string, string | number | null>[]; xKey: string; defs: SeriesDef[]; height?: number; ariaLabel: string;
+  yFormatter?: (v: number) => string; threshold?: { value: number; label: string };
+}) {
+  const [hidden, setHidden] = useState<Set<string>>(new Set());
+  const visible = props.defs.filter((d) => !hidden.has(d.key));
+  if (!props.rows.length) return <div className="text-muted text-sm py-6 text-center">No data points yet.</div>;
+  return (
+    <div className="space-y-2" role="figure" aria-label={props.ariaLabel}>
+      {props.defs.length > 1 && (
+        <div className="flex flex-wrap gap-2">
+          {props.defs.map((d) => (
+            <button key={d.key} className="chip cursor-pointer" aria-pressed={!hidden.has(d.key)}
+              style={{ ["--c" as any]: hidden.has(d.key) ? "#4b5578" : d.color }}
+              onClick={() => setHidden((h) => { const n = new Set(h); n.has(d.key) ? n.delete(d.key) : n.add(d.key); return n; })}>
+              <span className="w-2.5 h-2.5" style={{ background: hidden.has(d.key) ? "transparent" : d.color }} /> {d.label}
+            </button>
+          ))}
+        </div>
+      )}
+      <div style={{ height: props.height ?? 220 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={props.rows} margin={{ top: 8, right: 16, bottom: 4, left: 0 }}>
+            <CartesianGrid stroke="#1d2a55" strokeDasharray="2 4" />
+            <XAxis dataKey={props.xKey} stroke="#7d8bb5" tick={{ fontSize: 10 }} />
+            <YAxis stroke="#7d8bb5" tick={{ fontSize: 11 }} width={56} tickFormatter={props.yFormatter ?? ((v) => fmt(v, 3))} />
+            <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => (props.yFormatter ? props.yFormatter(v) : fmt(v, 4))} />
+            {visible.map((d) => (
+              <Line key={d.key} type="linear" dataKey={d.key} name={d.label} stroke={d.color} strokeWidth={2}
+                dot={{ r: 3, fill: d.color }} connectNulls isAnimationActive={false} />
+            ))}
+            {props.threshold && (
+              <Line dataKey={() => props.threshold!.value} name={props.threshold.label} stroke="#FF4D8D" strokeDasharray="5 4" dot={false} isAnimationActive={false} />
+            )}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}

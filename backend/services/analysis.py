@@ -34,6 +34,13 @@ CAPABILITIES = [
     ("generation", "deepmodel generation", "Generated output behaviour (GEN.*)", "JSONL outputs"),
     ("compare", "deepmodel compare", "Run comparison with compatibility guard (CMP.*)", "two run directories"),
     ("checkpoint", "deepmodel checkpoint", "Safe checkpoint metadata (CKP.*)", "checkpoint directory"),
+    (
+        "probe",
+        "deepmodel probe",
+        "Live behavioural inspection of a local or online model (PRB.*)",
+        "OpenAI-compatible endpoint",
+    ),
+    ("monitor", "deepmodel monitor", "Production monitoring from exported logs (MON.*)", "JSONL/CSV logs per day/week"),
 ]
 
 

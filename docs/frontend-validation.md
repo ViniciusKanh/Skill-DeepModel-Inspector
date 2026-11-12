@@ -1,3 +1,19 @@
+# Frontend & API Validation
+
+## Update 2026-11-12 — Model Lab & Production Monitor
+
+| Check | Result |
+|---|---|
+| `pytest -q` (Python 3.13) | 99 passed: 68 engine + 12 live probe/monitor + 12 API + 7 Playwright e2e |
+| `python3.11 -m pytest -q` | 80 passed, 2 skipped (API/e2e need FastAPI) |
+| `npm run typecheck` / `npm test` / `npm run build` | 0 errors / 8 passed / OK |
+| `ruff check` + `ruff format --check` | clean |
+| Skill & ZIP regression | `agensi/` and `dist/deepmodel-inspector-v1.0.0.zip` byte-identical to the previous release |
+| New screenshots | `docs/screenshots/14-model-lab.png`, `15-model-lab-transcript.png`, `16-production-monitor.png` |
+
+Live probes were validated against the **simulated** OpenAI-compatible server (`examples/fake_llm_server.py`), which
+exercises the real HTTP client and analyses. A real model (e.g. Ollama) was not available in the build environment.
+
 # Frontend & API Validation (real runs, 2026-11-09)
 
 Environment: Linux sandbox, Node 22.23.4 / npm 10.9.9, Python 3.13.18 (+ 3.11.18 for engine regression),

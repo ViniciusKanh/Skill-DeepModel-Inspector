@@ -24,6 +24,7 @@ export interface Project {
 export interface Job {
   id: string; kind: string; status: JobState; created: string; project_id: string; experiment_id?: string | null;
   progress_done?: number | null; progress_total?: number | null; message: string; report_id?: string | null; error?: string | null;
+  log?: string[];
 }
 
 export interface ReportMeta {
@@ -31,6 +32,7 @@ export interface ReportMeta {
   experiment_id?: string | null; experiment_name?: string | null; question?: string | null; demo: boolean;
   findings_by_severity: Record<string, number>; findings_by_status: Record<string, number>;
   analyses_run: string[]; answer_status?: string | null;
+  target_id?: string | null; target_name?: string | null; simulated?: boolean;
 }
 
 export interface Finding {
@@ -72,3 +74,22 @@ export interface RecordRow {
   repetition_rate: number | null; meta: Record<string, unknown>;
 }
 export interface FsEntry { name: string; path: string; dir: boolean; size: number | null; supported: boolean }
+
+export interface Target {
+  id: string; name: string; base_url: string; model: string; local: boolean; simulated: boolean;
+  api_key_env?: string | null; has_session_key: boolean; timeout: number; created: string;
+  project_id?: string | null; experiment_id?: string | null; folder?: string | null;
+}
+export interface TargetTest {
+  ok: boolean; latency_ms: number | null; reply: string; error: string | null; models: string[] | null;
+  models_error: string | null; model_listed: boolean | null;
+}
+export interface HistoryPoint {
+  report_id: string; created: string; error_rate: number | null; latency_p95_ms: number | null;
+  latency_median_ms: number | null; pass_rates: Record<string, number | null>; findings_by_severity: Record<string, number>;
+}
+export interface ProbeRecord {
+  probe_id: string; category: string; repeat: number; config: string; prompt: string; output: string;
+  temperature: number | null; latency_ms: number | null; finish_reason: string | null; completion_tokens: number | null;
+  error: string | null; passed: boolean | null; detail: string;
+}
